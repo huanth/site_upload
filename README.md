@@ -1,47 +1,50 @@
-# Project Name
+# TUYETVOI.XZY - Website upload miễn phí
+Demo: https://tuyetvoi.xyz/
 
-## Description
-A brief description of your project, what it does, and its purpose.
+## Giới thiệu
+Nền tảng upload file miễn phí, dễ dàng và nhanh chóng. Hỗ trợ tải lên và chia sẻ tập tin nhanh nhất.
 
-## Installation
-Instructions on how to install and set up your project.
+## Cài đặt
+ Các bước cài đặt site
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/yourproject.git
+git clone https://github.com/huanth/site_upload
+cd site_upload
 
-# Navigate to the project directory
-cd yourproject
+# Sửa thông tin database ở config/config.php
+$db_host = 'localhost';
+$db_user = '<root>';
+$db_pass = '<password>';
+$db_name = '<database name>';
 
-# Install dependencies
-npm install
+# Cập nhật database upload.sql, Có thể nhập thủ công hoặc dùng các lệnh sau:
+mysql -u <username> -p<password> <databasename> < <filename.sql>
+
+# Tìm bảng config trong database, thay thế giá trị home_url thành domain của site hiện tại hoặc dùng sql sau:
+update config set `home_url`=`<home_url>`
+# Lưu ý: home_url chỉ gồm url thuần, không gồm protocol(https://, http://) và gạch chéo ở cuối. VD: domain.local
 ```
 
-## Usage
-Instructions on how to use your project.
-
+## Sử dụng
+Đường dẫn vào admin: 
 ```bash
 # Start the project
-npm start
+domain.loca/admin
+
+# Tài khoản demo: admin/admin
 ```
+## Đóng góp
+Hướng dẫn đóng góp cho dự án của bạn.
 
-## Contributing
-Guidelines for contributing to your project.
+1. Phân nhánh kho lưu trữ.
+2. Tạo một nhánh mới (`gitcheck -b feature-branch`).
+3. Thực hiện các thay đổi của bạn.
+4. Cam kết các thay đổi của bạn (`git commit -m 'Thêm một số tính năng'`).
+5. Đẩy tới nhánh (`git Push Origin feature-branch`).
+6. Mở yêu cầu kéo.
 
-1. Fork the repository.
-2. Create a new branch (`git checkout -b feature-branch`).
-3. Make your changes.
-4. Commit your changes (`git commit -m 'Add some feature'`).
-5. Push to the branch (`git push origin feature-branch`).
-6. Open a pull request.
+## Giấy phép
+Bao gồm giấy phép mà dự án của bạn được phân phối.
 
-## License
-Include the license under which your project is distributed.
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Acknowledgements
-Credit those who have helped or inspired you in the creation of this project.
-
-- [Person or resource](link)
-- [Another person or resource](link)
+Dự án này được cấp phép theo Giấy phép MIT - xem tệp [LICENSE](LICENSE) để biết chi tiết.
