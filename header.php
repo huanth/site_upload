@@ -13,6 +13,51 @@ $config = mysqli_fetch_assoc($result_config);
 // Config
 $home_url = $config['value'];
 
+$title = "Trang Chủ | " .  $home_url . " - Web/wap upload file miễn phí";
+$description = $home_url . " - Nền tảng upload file miễn phí, dễ dàng và nhanh chóng. Hỗ trợ tải lên và chia sẻ tập tin nhanh nhất.";
+$keywords = "upload file miễn phí, chia sẻ file, tải lên file nhanh, lưu trữ trực tuyến";
+$author = "HuanTH - " . $home_url;
+
+$current_url = "http://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+
+if (strpos($current_url, "/file-info") !== false) {
+    $file_id = $_GET['id'];
+
+    $sql = "SELECT * FROM files WHERE id = ?";
+
+    if ($stmt = mysqli_prepare($conn, $sql)) {
+        // Gắn giá trị tham số vào câu truy vấn
+        mysqli_stmt_bind_param($stmt, 'i', $file_id);
+
+        // Thực thi câu truy vấn
+        mysqli_stmt_execute($stmt);
+
+        // Lấy kết quả truy vấn
+        $result = mysqli_stmt_get_result($stmt);
+
+         if (mysqli_num_rows($result) > 0) {
+            $file = mysqli_fetch_assoc($result);
+
+            // Hiển thị thông tin tập tin
+            $name = $file['name'];
+            $size = $file['size'];
+
+            // Định dạng lại kích thước file
+            if ($size < 1024) {
+                $size = $size . ' bytes';
+            } elseif ($size < 1048576) {
+                $size = round($size / 1024, 2) . ' KB';
+            } else {
+                $size = round($size / 1048576, 2) . ' MB';
+            }
+
+            $title = "Tải về " . $name . "(" . $size . ")";
+            $description = "Tải về " . $name . "(" . $size . ") được upload tại " . $home_url;
+            $keywords = $name;
+         }
+    }
+}
+
 // Session check
 session_start();
 if (isset($_SESSION['user'])) {
@@ -33,19 +78,19 @@ if (isset($_SESSION['user'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="<?= $home_url; ?> - Nền tảng upload file miễn phí, dễ dàng và nhanh chóng. Hỗ trợ tải lên và chia sẻ tập tin nhanh nhất.">
-    <meta name="keywords" content="upload file miễn phí, chia sẻ file, tải lên file nhanh, lưu trữ trực tuyến">
-    <meta name="author" content="<?= $home_url; ?>">
-    <meta property="og:title" content="<?= $home_url; ?> - Upload File Miễn Phí">
-    <meta property="og:description" content="Dịch vụ lưu trữ và chia sẻ tập tin nhanh chóng, dễ dàng, miễn phí.">
+    <meta name="description" content="<?= $description; ?>">
+    <meta name="keywords" content="<?= $keywords; ?>">
+    <meta name="author" content="<?= $author; ?>">
+    <meta property="og:title" content="<?= $title; ?>">
+    <meta property="og:description" content="<?= $description; ?>">
     <meta property="og:url" content="https://<?= $home_url; ?>">
     <meta property="og:type" content="website">
     <meta property="og:image" content="https://<?= $home_url; ?>/logo.png">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="<?= $home_url; ?> - Upload File Miễn Phí">
-    <meta name="twitter:description" content="Dịch vụ lưu trữ và chia sẻ tập tin nhanh chóng, dễ dàng, miễn phí.">
+    <meta name="twitter:title" content="<?= $title; ?>">
+    <meta name="twitter:description" content="<?= $description; ?>">
     <meta name="twitter:image" content="https://<?= $home_url; ?>/logo.png">
-    <title>Trang Chủ | <?= $home_url; ?> - Web/wap upload file miễn phí</title>
+    <title><?= $title; ?></title>
     <!-- Sử dụng Tailwind CSS thông qua CDN -->
     <link href="https://unpkg.com/tailwindcss@^2.0/dist/tailwind.min.css" rel="stylesheet">
     <link href="/chat.css" rel="stylesheet">

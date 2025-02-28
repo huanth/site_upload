@@ -31,48 +31,52 @@ if (isset($_POST['submit'])) {
             'application/x-java-archive',  // JAR, JAD
         ];
 
-        if (!in_array($fileType, $allowedFileTypes)) {
-            echo "File type is not allowed. Please upload an image, video, or archive file.";
-            exit;
-        }
+        if (in_array($fileType, $allowedFileTypes)) {
+            // Kiểm tra kích thước file (max 30MB)
+            if ($fileSize <= 30 * 1024 * 1024) { // 30MB
+                $current_user_id = $_SESSION['user']['id'];
 
-        // Kiểm tra kích thước file (max 30MB)
-        if ($fileSize > 30 * 1024 * 1024) { // 30MB
-            echo "File is too large. Maximum allowed size is 30MB.";
-            exit;
-        }
+                // Đặt tên file duy nhất để tránh trùng lặp
+                $targetFilePath = $uploadDirectory . $current_user_id . time() . "_" . $fileName;
 
-        $current_user_id = $_SESSION['user']['id'];
+                // Thêm dữ liệu vào database
+                $password = isset($_POST['password']) ? $_POST['password'] : '';
+                $sql = "INSERT INTO files (name, size, type, path, password, user) VALUES ('$fileName', $fileSize, '$fileType', '$targetFilePath', '$password', $current_user_id)";
+                $result = mysqli_query($conn, $sql);
 
-        // Đặt tên file duy nhất để tránh trùng lặp
-        $targetFilePath = $uploadDirectory . $current_user_id . time() . "_" . $fileName;
+                // Add exp to user
+                $current_user_exp = (int)$_SESSION['user']['exp'];
+                $new_current_user_exp = $current_user_exp + 1;
+                $sql_new_exp = "UPDATE users SET exp = $new_current_user_exp WHERE id = $current_user_id";
+                $result_exp = mysqli_query($conn, $sql_new_exp);
 
-        // Thêm dữ liệu vào database
-        $password = isset($_POST['password']) ? $_POST['password'] : '';
-        $sql = "INSERT INTO files (name, size, type, path, password, user) VALUES ('$fileName', $fileSize, '$fileType', '$targetFilePath', '$password', $current_user_id)";
-        $result = mysqli_query($conn, $sql);
+                // Di chuyển file từ thư mục tạm vào thư mục uploads
+                if (move_uploaded_file($fileTmpPath, $targetFilePath)) {
+                    // echo "The file " . $fileName . " has been uploaded successfully.";
 
-        // Add exp to user
-        $current_user_exp = (int)$_SESSION['user']['exp'];
-        $new_current_user_exp = $current_user_exp + 1;
-        $sql_new_exp = "UPDATE users SET exp = $new_current_user_exp WHERE id = $current_user_id";
-        $result_exp = mysqli_query($conn, $sql_new_exp);
+                    // Get id file vừa tải lên
+                    $sql_file_new_uploaded = "SELECT * FROM files WHERE path = '$targetFilePath'";
+                    $result_file_new_uploaded = mysqli_query($conn, $sql_file_new_uploaded);
+                    $file_new_uploaded = mysqli_fetch_assoc($result_file_new_uploaded);
 
-        // Di chuyển file từ thư mục tạm vào thư mục uploads
-        if (move_uploaded_file($fileTmpPath, $targetFilePath)) {
-            // echo "The file " . $fileName . " has been uploaded successfully.";
+                    // Chuyển hướng về trang thông tin file
+                    $id_file = $file_new_uploaded['id'];
 
-            // Get id file vừa tải lên
-            $sql_file_new_uploaded = "SELECT * FROM files WHERE path = '$targetFilePath'";
-            $result_file_new_uploaded = mysqli_query($conn, $sql_file_new_uploaded);
-            $file_new_uploaded = mysqli_fetch_assoc($result_file_new_uploaded);
-
-            // Chuyển hướng về trang thông tin file
-            $id_file = $file_new_uploaded['id'];
-
-            header('Location: file-info/' . $id_file);
+                    header('Location: file-info/' . $id_file);
+                } else {
+                    echo "There was an error uploading your file.";
+                }
+            } else {
+                echo '<div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 mb-4 rounded relative" role="alert">
+                    <strong class="font-bold">Lỗi!</strong>
+                    <span class="block sm:inline">Dung lượng file phải nhỏ hơn 30MB</span>
+                </div>';
+            }
         } else {
-            echo "There was an error uploading your file.";
+            echo '<div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 mb-4 rounded relative" role="alert">
+                <strong class="font-bold">Lỗi!</strong>
+                <span class="block sm:inline">Loại file không được hỗ trợ, hãy thử lại.</span>
+            </div>';
         }
     } else {
         echo "No file uploaded.";

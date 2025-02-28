@@ -120,8 +120,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <!-- User Statistics -->
         <div class="grid grid-cols-2 gap-4 mt-6 text-sm">
             <div class="bg-blue-100 p-4 rounded-lg shadow-sm">
-                <p class="font-medium text-gray-700">⭐ EXP:</p>
-                <p class="text-blue-600 text-lg font-bold"><?= $exp ?></p>
+                <p class="font-medium text-gray-700">⭐ Kinh nghiệm:</p>
+                <p class="text-blue-600 text-lg font-bold"><?= $exp . ' Exp' ?></p>
             </div>
             <div class="bg-green-100 p-4 rounded-lg shadow-sm">
                 <p class="font-medium text-gray-700">🏆 Quyền hạn:</p>

@@ -110,10 +110,6 @@ if (isset($_GET['id'])) :
 
             $password = $file['password'];
 
-            // Thay đổi title trang web ở header
-            $title = 'Tải về ' . htmlspecialchars($name);
-            echo "<script>document.title = '$title';</script>"; // Thay đổi title trang
-
             // Check xem nếu file là ảnh thì hiển thị nút xem trước
             if (strpos($type, 'image') !== false) {
                 $preview = true;
@@ -194,16 +190,6 @@ if (isset($_GET['id'])) :
                     <input type="text" value="<?= 'https://' .  $home_url; ?>/file-info/<?= $id; ?>" class="w-full p-2 border border-gray-300 rounded mt-2" readonly="">
                 </div>
             </div>
-
-            <script>
-                const previewImage = document.getElementById('fileInput');
-
-                previewImage.addEventListener('click', () => {
-                    const previewImageElement = document.getElementById('previewImage');
-                    previewImageElement.classList.toggle('hidden');
-                });
-            </script>
-
 <?php else :
             echo "File bị mất hoặc không tồn tại.";
         endif;
