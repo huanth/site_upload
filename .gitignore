@@ -1,2 +1,2 @@
-# Remove all file in /files
+# Don't add all files in folder /files
 files/*
