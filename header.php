@@ -26,16 +26,13 @@ if (strpos($current_url, "/file-info") !== false) {
     $sql = "SELECT * FROM files WHERE id = ?";
 
     if ($stmt = mysqli_prepare($conn, $sql)) {
-        // Gắn giá trị tham số vào câu truy vấn
         mysqli_stmt_bind_param($stmt, 'i', $file_id);
 
-        // Thực thi câu truy vấn
         mysqli_stmt_execute($stmt);
 
-        // Lấy kết quả truy vấn
         $result = mysqli_stmt_get_result($stmt);
 
-         if (mysqli_num_rows($result) > 0) {
+        if (mysqli_num_rows($result) > 0) {
             $file = mysqli_fetch_assoc($result);
 
             // Hiển thị thông tin tập tin
@@ -54,7 +51,7 @@ if (strpos($current_url, "/file-info") !== false) {
             $title = "Tải về " . $name . "(" . $size . ")";
             $description = "Tải về " . $name . "(" . $size . ") được upload tại " . $home_url;
             $keywords = $name;
-         }
+        }
     }
 }
 
