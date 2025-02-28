@@ -260,13 +260,20 @@ if ($total_pages > 1) {
     }
 }
 
-
 ?>
 
 <section class="mb-6">
     <h2 class="text-xl font-semibold mb-4 border-b-2 border-primary pb-2 flex items-center">
-        <i class="fas fa-folder-open text-primary mr-2"></i> FILE CỦA BẠN <span class="ml-2 px-2.5 py-0.5 bg-primary/10 text-primary rounded-full text-sm">4</span>
+        <i class="fas fa-folder-open text-primary mr-2"></i> FILE CỦA BẠN <span class="ml-2 px-2.5 py-0.5 bg-primary/10 text-primary rounded-full text-sm"><?= $total_records; ?></span>
     </h2>
+
+    <?php if (empty($files)) : ?>
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg max-w-2xl mx-auto">
+            <div class="text-center">
+                <p class="text-gray-500 dark:text-gray-400 mt-4">Không có file nào.</p>
+            </div>
+        </div>
+    <?php endif; ?>
 
     <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg max-w-2xl mx-auto">
         <div class="divide-y divide-gray-200 dark:divide-gray-700">
@@ -278,7 +285,10 @@ if ($total_pages > 1) {
                                 <i class="fas fa-file-image text-blue-500 dark:text-blue-400"></i>
                             </div>
                             <div class="min-w-0 flex-1">
-                                <a href="/tap-tin/images-jpg/766" class="text-gray-800 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 font-medium block transition-colors">
+                                <?php
+                                $file_url = $home_url . '/file-info/' . $file['id'];
+                                ?>
+                                <a href="https://<?= $file_url; ?>" class="text-gray-800 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 font-medium block transition-colors">
                                     <div class="truncate max-w-[calc(100%-20px)]" title="images.jpg"><?= $file['name']; ?></div>
                                 </a>
                                 <div class="text-xs text-gray-500 dark:text-gray-400 mt-1 truncate">
@@ -290,10 +300,10 @@ if ($total_pages > 1) {
                             </div>
                         </div>
                         <div class="flex-shrink-0 flex items-center space-x-2">
-                            <a href="/tap-tin/images-jpg/766" class="text-gray-400 hover:text-blue-500 p-2 rounded-full hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors">
+                            <a download="" href="https://<?= $file_url; ?>" class="text-gray-400 hover:text-blue-500 p-2 rounded-full hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors">
                                 <i class="fas fa-download"></i>
                             </a>
-                            <a href="delete_permanent_file.php?id=766" onclick="return confirm('Bạn có chắc chắn muốn xóa file này?');" class="text-gray-400 hover:text-red-500 p-2 rounded-full hover:bg-red-50 dark:hover:bg-red-900/30 transition-colors">
+                            <a href="delete_permanent_file.php?id=<?= $file['id']; ?>" onclick="return confirm('Bạn có chắc chắn muốn xóa file này?');" class="text-gray-400 hover:text-red-500 p-2 rounded-full hover:bg-red-50 dark:hover:bg-red-900/30 transition-colors">
                                 <i class="fas fa-trash"></i>
                             </a>
                         </div>
