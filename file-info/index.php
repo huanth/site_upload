@@ -138,10 +138,12 @@ if (isset($_GET['id'])) :
                 <div class="list4 font-semibold">Thời gian tải lên: <span class="font-normal"><?= $uploaded_at; ?></span></div>
                 <div class="list4 font-semibold">Upload bởi thành viên: <span class="font-normal text-red-700"><?= $user_uploaded; ?></span></div>
 
-                <div class="list4 text-center mt-3">
-                    <p>Hinh ảnh xem trước:</p>
-                    <img src="<?= $pathPreview; ?>" alt="Preview" class=" mt-3" id="previewImage" style="margin-left: auto; margin-right: auto;">
-                </div>
+                <?php if ($preview == true) : ?>
+                    <div class="list4 text-center mt-3">
+                        <p>Hình ảnh xem trước:</p>
+                        <img src="<?= $pathPreview; ?>" alt="Preview" class=" mt-3" id="previewImage" style="margin-left: auto; margin-right: auto;">
+                    </div>
+                <?php endif; ?>
 
                 <?php if (!empty($password)) : ?>
                     <div class="glist mt-4">
@@ -185,7 +187,7 @@ if (isset($_GET['id'])) :
             <div class="tp1 bg-white p-4 rounded-b-lg shadow-md">
                 <div class="btm">
                     <label class="font-semibold">BBCode:</label>
-                    <input type="text" value="[url=<?= 'https://' . $home_url; ?>/file-info?id=<?= $id; ?>][img]Tải về <?= $name; ?>[/img][/url]" class="w-full p-2 border border-gray-300 rounded mt-2" readonly="">
+                    <input type="text" value="[url=<?= 'https://' . $home_url; ?>/file-info/<?= $id; ?>]Tải về <?= $name; ?>[/url]" class="w-full p-2 border border-gray-300 rounded mt-2" readonly="">
                 </div>
                 <div class="btm mt-3">
                     <label class="font-semibold">URL:</label>
