@@ -30,7 +30,7 @@ update config set `home_url`=`<home_url>`
 Đường dẫn vào admin: 
 ```bash
 # Start the project
-domain.loca/admin
+domain.com/admin
 
 # Tài khoản demo: admin/admin
 ```
