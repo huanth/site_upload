@@ -1,2 +1,3 @@
 # Don't add all files in folder /files
 files/*
+config/config.php
