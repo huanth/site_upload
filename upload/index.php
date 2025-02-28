@@ -92,7 +92,7 @@ if (isset($_POST['submit'])) {
         <form action="" method="post" enctype="multipart/form-data" class="space-y-6 relative">
             <!-- Custom File Input -->
             <div class="mb-6">
-                <label for="file" class="flex flex-col items-center justify-center w-full h-36 border-2 border-dashed border-blue-300 rounded-lg cursor-pointer hover:border-blue-400 transition bg-blue-50 hover:bg-blue-100">
+                <label for="file" id="file-label-container" class="flex flex-col items-center justify-center w-full h-36 border-2 border-dashed border-blue-300 rounded-lg cursor-pointer hover:border-blue-400 transition bg-blue-50 hover:bg-blue-100">
                     <div class="flex flex-col items-center justify-center pt-5 pb-6">
                         <svg class="w-12 h-12 mb-3 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3-3m0 0l3 3m-3-3v8"></path>
@@ -128,6 +128,7 @@ if (isset($_POST['submit'])) {
 <script>
     const fileInput = document.getElementById('file');
     const fileLabel = document.getElementById('file-label');
+    const fileLabelContainer = document.getElementById('file-label-container');
 
     fileInput.addEventListener('change', (e) => {
         const fileName = e.target.files[0].name;
@@ -150,8 +151,44 @@ if (isset($_POST['submit'])) {
             formattedSize = size + ' bytes';
         }
 
-
         fileLabel.textContent = fileName + ' (' + formattedSize + ')';
+    });
 
+    // Sự kiện khi tệp được kéo vào khu vực
+    fileLabelContainer.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        fileLabelContainer.classList.add('bg-blue-100'); // Thêm màu nền khi tệp đang được kéo vào
+    });
+
+    // Sự kiện khi tệp bị thả vào khu vực
+    fileLabelContainer.addEventListener('drop', (e) => {
+        e.preventDefault();
+        fileLabelContainer.classList.remove('bg-blue-100'); // Xóa màu nền khi tệp được thả
+
+        // Lấy tệp bị thả
+        const file = e.dataTransfer.files[0];
+        if (file) {
+            // Gán tệp vào input file
+            fileInput.files = e.dataTransfer.files;
+
+            const size = file.size;
+            const kb = 1024;
+            const mb = kb * 1024;
+            const gb = mb * 1024;
+
+            let formattedSize = '';
+            if (size >= gb) {
+                formattedSize = (size / gb).toFixed(2) + ' GB';
+            } else if (size >= mb) {
+                formattedSize = (size / mb).toFixed(2) + ' MB';
+            } else if (size >= kb) {
+                formattedSize = (size / kb).toFixed(2) + ' KB';
+            } else {
+                formattedSize = size + ' bytes';
+            }
+
+            // Hiển thị tên tệp đã chọn
+            fileLabel.textContent = file.name + ' (' + formattedSize + ')';
+        }
     });
 </script>

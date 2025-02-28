@@ -285,3 +285,8 @@ if (isset($_SESSION['user'])) {
             </div>
         </header>
         <main class="bg-white p-6 shadow-md">
+            <section class="bg-gray-100 py-8 rounded-lg mb-4">
+                <div class="container mx-auto px-4 max-w-2xl text-center">
+                    Khu vực quảng cáo
+                </div>
+            </section>

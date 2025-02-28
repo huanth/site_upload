@@ -189,7 +189,7 @@ if (isset($_GET['id'])) :
                 </div>
                 <div class="btm mt-3">
                     <label class="font-semibold">URL:</label>
-                    <input type="text" value="<?= 'https://' .  $home_url; ?>/file-info?id=<?= $id; ?>" class="w-full p-2 border border-gray-300 rounded mt-2" readonly="">
+                    <input type="text" value="<?= 'https://' .  $home_url; ?>/file-info/<?= $id; ?>" class="w-full p-2 border border-gray-300 rounded mt-2" readonly="">
                 </div>
             </div>
 
