@@ -15,8 +15,6 @@ $sitemapIndex = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><sit
 // Danh sách các sitemap con
 $sitemaps = [
     "sitemap-pages.xml",
-    "user/sitemap.xml",
-    "file/sitemap.xml"
 ];
 
 // Thêm từng sitemap con vào sitemap index
@@ -33,7 +31,7 @@ $sitemapIndex->asXML($sitemap_file);
 include './generate_sitemap_pages.php';
 
 // XML Users
-include './generate_sitemap_users.php';
+// include './generate_sitemap_users.php';
 
 
 header('Location: /');
