@@ -110,7 +110,7 @@ CREATE TABLE `tin_tuc` (
 
 CREATE TABLE `tu_luyen` (
   `id` int NOT NULL,
-  `cap-bac` varchar(255) NOT NULL,
+  `cap_bac` varchar(255) NOT NULL,
   `exp` int NOT NULL,
   `note` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -119,7 +119,7 @@ CREATE TABLE `tu_luyen` (
 -- Đang đổ dữ liệu cho bảng `tu_luyen`
 --
 
-INSERT INTO `tu_luyen` (`id`, `cap-bac`, `exp`, `note`) VALUES
+INSERT INTO `tu_luyen` (`id`, `cap_bac`, `exp`, `note`) VALUES
 (1, 'Phàm nhân', 0, ''),
 (2, 'Luyện khí kỳ', 10, ''),
 (3, 'Trúc cơ kỳ', 20, ''),

@@ -8,31 +8,34 @@ if (!$user) {
     exit;
 }
 
-$role = $user['role'];
+$role = (int) $user['role'];
 
-// Get user role
-$sql = "SELECT * FROM roles WHERE id = $role";
-$result = mysqli_query($conn, $sql);
-$role = mysqli_fetch_assoc($result);
+// Lấy thông tin vai trò
+$stmt = $conn->prepare("SELECT position FROM roles WHERE id = ?");
+$stmt->bind_param("i", $role);
+$stmt->execute();
+$result = $stmt->get_result();
+$roleData = $result->fetch_assoc();
+$roleName = $roleData['position'] ?? 'N/A';
 
-// Get Role name
-$roleName = $role['position'];
 
-echo "<script>document.title = 'Hồ sơ cá nhân - $user[username]'</script>";
+// Lấy cấp bậc dựa trên EXP
+$exp = (int) $user['exp'];
 
-// Tu luyện
-$exp = $user['exp'];
+$stmt = $conn->prepare("SELECT cap_bac, exp FROM tu_luyen WHERE exp <= ? ORDER BY exp DESC LIMIT 1");
+$stmt->bind_param("i", $exp);
+$stmt->execute();
+$result = $stmt->get_result();
+$tu_luyen = $result->fetch_assoc();
+$cap_bac = $tu_luyen['cap_bac'] ?? 'Chưa có cấp bậc';
 
-$sql_exp = "SELECT * FROM tu_luyen WHERE exp <= $exp ORDER BY exp DESC LIMIT 1";
-$result_exp = mysqli_query($conn, $sql_exp);
-$tu_luyen = mysqli_fetch_assoc($result_exp);
-$cap_bac = $tu_luyen['cap-bac'];
+$stmt = $conn->prepare("SELECT cap_bac, exp FROM tu_luyen WHERE exp > ? ORDER BY exp ASC LIMIT 1");
+$stmt->bind_param("i", $exp);
+$stmt->execute();
+$result = $stmt->get_result();
+$next_cap_bac = $result->fetch_assoc();
 
-$next_cap_bac_sql = "SELECT * FROM tu_luyen WHERE exp > $exp ORDER BY exp ASC LIMIT 1";
-$next_cap_bac_result = mysqli_query($conn, $next_cap_bac_sql);
-$next_cap_bac = mysqli_fetch_assoc($next_cap_bac_result);
 $pro_vip = 0;
-
 if ($next_cap_bac) {
     $exp_next = $next_cap_bac['exp'];
     $exp_current = $tu_luyen['exp'];
@@ -44,31 +47,53 @@ if ($next_cap_bac) {
     $pro_vip = 1;
 }
 
-// Get gavatar
-$email = $user['email'];
-$hash = md5(strtolower(trim($email)));
+
+// Get Gravatar
+$email = strtolower(trim($user['email']));
+$hash = md5($email);
 $avatar = "https://www.gravatar.com/avatar/$hash?s=200&d=identicon";
 
 // Change password
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $oldPassword = $_POST['old_password'];
-    $newPassword = $_POST['new_password'];
-    $confirmPassword = $_POST['confirm_password'];
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['change_password'])) {
 
-    if ($newPassword != $confirmPassword) {
+    // Kiểm tra CSRF Token
+    if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+        die('CSRF token không hợp lệ.');
+    }
+
+    // Lấy dữ liệu từ form và lọc dữ liệu
+    $oldPassword = trim($_POST['old_password']);
+    $newPassword = trim($_POST['new_password']);
+    $confirmPassword = trim($_POST['confirm_password']);
+
+    // Kiểm tra mật khẩu có đủ dài không
+    if (strlen($newPassword) < 6) {
+        die('Mật khẩu mới phải có ít nhất 6 ký tự.');
+    }
+
+    // Kiểm tra mật khẩu xác nhận có trùng khớp không
+    if ($newPassword !== $confirmPassword) {
         echo '<div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 mb-4 rounded relative" role="alert">
                 <strong class="font-bold">Lỗi!</strong>
                 <span class="block sm:inline">Mật khẩu xác nhận không khớp.</span>
             </div>';
     } else {
-        $oldPassword = md5($oldPassword);
-        $newPassword = md5($newPassword);
+        // Lấy mật khẩu đã băm từ database
+        $stmt = $conn->prepare("SELECT password FROM users WHERE id = ?");
+        $stmt->bind_param("i", $user['id']);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $userData = $result->fetch_assoc();
 
-        $sql = "SELECT * FROM users WHERE id = $user[id] AND password = '$oldPassword'";
-        $result = mysqli_query($conn, $sql);
-        if (mysqli_num_rows($result) > 0) {
-            $sql = "UPDATE user SET password = '$newPassword' WHERE id = $user[id]";
-            if (mysqli_query($conn, $sql)) {
+        // Kiểm tra mật khẩu cũ có đúng không
+        if ($userData && password_verify($oldPassword, $userData['password'])) {
+            // Băm mật khẩu mới
+            $newPasswordHash = password_hash($newPassword, PASSWORD_DEFAULT);
+
+            // Cập nhật mật khẩu mới vào database
+            $stmt = $conn->prepare("UPDATE users SET password = ? WHERE id = ?");
+            $stmt->bind_param("si", $newPasswordHash, $user['id']);
+            if ($stmt->execute()) {
                 echo '<div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 mb-4 rounded relative" role="alert">
                         <strong class="font-bold">Thành công!</strong>
                         <span class="block sm:inline">Đổi mật khẩu thành công.</span>
@@ -88,6 +113,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 }
 
+// CSRF Token
+$_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+
 ?>
 
 <section class="mb-6">
@@ -105,7 +133,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <div class="mt-3">
             <p class="text-gray-700 font-medium">🔹 Cấp bậc hiện tại: <span class="font-semibold text-blue-700"><?= $cap_bac; ?></span></p>
             <?php if ($pro_vip == 0) : ?>
-                <p class="text-gray-700 font-medium">🔸 Cấp bậc tiếp theo: <span class="font-semibold text-red-700"><?= $next_cap_bac['cap-bac']; ?> (<?= $next_cap_bac['exp']; ?> Exp )</span>
+                <p class="text-gray-700 font-medium">🔸 Cấp bậc tiếp theo: <span class="font-semibold text-red-700"><?= $next_cap_bac['cap_bac']; ?> (<?= $next_cap_bac['exp']; ?> Exp )</span>
                 <?php else : ?>
                 <p class="text-gray-700 font-medium">Bạn đã đứng ở đỉnh cao thế gian rồi, chúc mừng bạn!</p>
             <?php endif; ?>
@@ -155,6 +183,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                             </button>
                                         </div>
                                         <form method="POST" class="mt-4">
+                                            <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token']; ?>">
+
                                             <div class="mt-4">
                                                 <label for="old_password" class="block text-sm font-medium text-gray-700">Mật khẩu cũ</label>
                                                 <input type="password" name="old_password" id="old_password" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" required>
@@ -170,7 +200,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                                 " required>
                                             </div>
                                             <div class="mt-6">
-                                                <button type="submit" class="w-full bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition">Lưu thay đổi</button>
+                                                <button type="submit" name="change_password" class="w-full bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition">Lưu thay đổi</button>
                                             </div>
                                         </form>
                                     </div>
