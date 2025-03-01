@@ -84,6 +84,16 @@ if (strpos($current_url, "/profile") !== false) {
     $keywords = $user['username'];
 }
 
+if (strpos($current_url, "/search_file") !== false) {
+    if (isset($_GET['name'])) {
+        $name = $_GET['name'] ?? '';
+
+        $title = "Tìm kiếm: " . $name;
+        $description = "Tìm kiếm: " . $name;
+        $keywords = $name;
+    }
+}
+
 ?>
 <!DOCTYPE html>
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
