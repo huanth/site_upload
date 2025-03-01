@@ -5,6 +5,16 @@ ob_start();
 // Config database
 include 'config/config.php';
 
+// Session check
+session_start();
+if (isset($_SESSION['user'])) {
+    // Update the User 
+    $sql = "SELECT * FROM users WHERE id = " . $_SESSION['user']['id'];
+    $result = mysqli_query($conn, $sql);
+    $user = mysqli_fetch_assoc($result);
+    $_SESSION['user'] = $user;
+}
+
 // Load config
 $sql_config = "SELECT * FROM config WHERE `key` = 'home_url'";
 $result_config = mysqli_query($conn, $sql_config);
@@ -55,15 +65,12 @@ if (strpos($current_url, "/file-info") !== false) {
     }
 }
 
-// Session check
-session_start();
-if (isset($_SESSION['user'])) {
-    // Update the User 
-    $sql = "SELECT * FROM users WHERE id = " . $_SESSION['user']['id'];
-    $result = mysqli_query($conn, $sql);
-    $user = mysqli_fetch_assoc($result);
-    $_SESSION['user'] = $user;
+if (strpos($current_url, "/profile") !== false) {
+    $title = "Hồ sơ " . $user['username'] . " - " . $home_url;
+    $description = "Hồ sơ " . $user['username'] . " - Nền tảng upload file miễn phí, dễ dàng và nhanh chóng. Hỗ trợ tải lên và chia sẻ tập tin nhanh nhất.";
+    $keywords = $user['username'];
 }
+
 ?>
 <!DOCTYPE html>
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
