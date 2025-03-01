@@ -17,10 +17,9 @@
                                 </svg>
                             </div>
                             <div class="ml-4 flex-grow">
-                                <p class="text-gray-700 font-medium">📂 Tổng số tập tin</p>
+                                <p class="text-gray-700 font-medium">📂 Quản lí tệp tin</p>
                                 <p class="text-2xl font-semibold text-blue-600">
-                                    2 <span class="text-gray-400 text-lg">|</span>
-                                    <span class="text-blue-500">148.11 KB</span>
+                                    <span class="text-blue-500">Quản lí tệp tin</span>
                                 </p>
                             </div>
                             <div class="bg-blue-50 rounded-full p-2 hidden md:block">
@@ -41,9 +40,9 @@
                                 </svg>
                             </div>
                             <div class="ml-4 flex-grow">
-                                <p class="text-gray-700 font-medium">👥 Tổng thành viên</p>
+                                <p class="text-gray-700 font-medium">👥 Quản lí thành viên</p>
                                 <p class="text-2xl font-semibold text-green-600">
-                                    4 <span class="text-sm text-gray-500 ml-2">thành viên</span>
+                                    <span class="text-sm text-gray-500 ml-2">Quản lí thành viên</span>
                                 </p>
                             </div>
                             <div class="bg-green-50 rounded-full p-2 hidden md:block">
