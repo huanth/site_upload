@@ -216,7 +216,6 @@ $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 
 <?php
 // Get user files
-
 $current_page = $_GET['page'] ?? 1;
 $limit = 5;
 $offset = ($current_page - 1) * $limit;
@@ -303,51 +302,52 @@ if ($total_pages > 1) {
                 <p class="text-gray-500 dark:text-gray-400 mt-4">Không có file nào.</p>
             </div>
         </div>
-    <?php endif; ?>
+    <?php else : ?>
 
-    <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg max-w-2xl mx-auto">
-        <div class="divide-y divide-gray-200 dark:divide-gray-700">
-            <?php foreach ($files as $file) : ?>
-                <div class="py-3 group">
-                    <div class="flex items-center justify-between gap-3 p-3 rounded-lg group-hover:bg-gray-50 dark:group-hover:bg-gray-700 transition duration-200">
-                        <div class="flex items-center min-w-0 flex-1">
-                            <div class="flex-shrink-0 w-10 h-10 flex items-center justify-center bg-blue-100 dark:bg-blue-900/30 rounded-lg mr-3">
-                                <i class="fas fa-file-image text-blue-500 dark:text-blue-400"></i>
-                            </div>
-                            <div class="min-w-0 flex-1">
-                                <?php
-                                $file_url = $home_url . '/file-info/' . $file['id'];
-                                ?>
-                                <a href="https://<?= $file_url; ?>" class="text-gray-800 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 font-medium block transition-colors">
-                                    <div class="truncate max-w-[calc(100%-20px)]" title="images.jpg"><?= $file['name']; ?></div>
-                                </a>
-                                <div class="text-xs text-gray-500 dark:text-gray-400 mt-1 truncate">
-                                    <span class="inline-flex items-center mr-3">
-                                        <i class="far fa-calendar-alt mr-1"></i>
-                                        <?= date('d/m/Y', strtotime($file['date_create'])); ?>
-                                    </span>
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg max-w-2xl mx-auto">
+            <div class="divide-y divide-gray-200 dark:divide-gray-700">
+                <?php foreach ($files as $file) : ?>
+                    <div class="py-3 group">
+                        <div class="flex items-center justify-between gap-3 p-3 rounded-lg group-hover:bg-gray-50 dark:group-hover:bg-gray-700 transition duration-200">
+                            <div class="flex items-center min-w-0 flex-1">
+                                <div class="flex-shrink-0 w-10 h-10 flex items-center justify-center bg-blue-100 dark:bg-blue-900/30 rounded-lg mr-3">
+                                    <i class="fas fa-file-image text-blue-500 dark:text-blue-400"></i>
+                                </div>
+                                <div class="min-w-0 flex-1">
+                                    <?php
+                                    $file_url = $home_url . '/file-info/' . $file['id'];
+                                    ?>
+                                    <a href="https://<?= $file_url; ?>" class="text-gray-800 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 font-medium block transition-colors">
+                                        <div class="truncate max-w-[calc(100%-20px)]" title="images.jpg"><?= $file['name']; ?></div>
+                                    </a>
+                                    <div class="text-xs text-gray-500 dark:text-gray-400 mt-1 truncate">
+                                        <span class="inline-flex items-center mr-3">
+                                            <i class="far fa-calendar-alt mr-1"></i>
+                                            <?= date('d/m/Y', strtotime($file['date_create'])); ?>
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="flex-shrink-0 flex items-center space-x-2">
-                            <a href="https://<?= $file_url; ?>" class="text-gray-400 hover:text-blue-500 p-2 rounded-full hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors">
-                                <i class="fas fa-download"></i>
-                            </a>
-                            <a href="delete_permanent_file.php?id=<?= $file['id']; ?>" onclick="return confirm('Bạn có chắc chắn muốn xóa file này?');" class="text-gray-400 hover:text-red-500 p-2 rounded-full hover:bg-red-50 dark:hover:bg-red-900/30 transition-colors">
-                                <i class="fas fa-trash"></i>
-                            </a>
+                            <div class="flex-shrink-0 flex items-center space-x-2">
+                                <a href="https://<?= $file_url; ?>" class="text-gray-400 hover:text-blue-500 p-2 rounded-full hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors">
+                                    <i class="fas fa-download"></i>
+                                </a>
+                                <a href="delete_permanent_file.php?id=<?= $file['id']; ?>" onclick="return confirm('Bạn có chắc chắn muốn xóa file này?');" class="text-gray-400 hover:text-red-500 p-2 rounded-full hover:bg-red-50 dark:hover:bg-red-900/30 transition-colors">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </div>
                         </div>
                     </div>
-                </div>
-            <?php endforeach; ?>
-        </div>
+                <?php endforeach; ?>
+            </div>
 
-        <!-- Pagination -->
-        <div class="flex flex-wrap justify-center mt-6 gap-2">
+            <!-- Pagination -->
+            <div class="flex flex-wrap justify-center mt-6 gap-2">
 
-            <?= $html_pagination; ?>
+                <?= $html_pagination; ?>
+            </div>
         </div>
-    </div>
+    <?php endif; ?>
 </section>
 
 <?php include '../footer.php'; ?>
