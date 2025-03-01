@@ -10,6 +10,12 @@ if (isset($_POST['submit'])) {
         $fileType = mime_content_type($fileTmpPath);
         $uploadDirectory = 'files/'; // Thư mục để lưu trữ file
 
+        // Chuyển tên file thành chữ thường và thay thế các ký tự không hợp lệ
+        $fileName = strtolower($fileName); // Chuyển tên file thành chữ thường
+        $fileName = preg_replace('/[^a-z0-9_\-\.]/', '_', $fileName); // Thay thế các ký tự không hợp lệ bằng dấu gạch dưới (_)
+        $fileName = preg_replace('/_+/', '_', $fileName); // Thay thế nhiều dấu gạch dưới thành một dấu gạch dưới
+        $fileName = trim($fileName, '_'); // Loại bỏ dấu gạch dưới ở đầu và cuối nếu có
+
         // Kiểm tra thư mục uploads có tồn tại chưa, nếu không thì tạo mới
         if (!file_exists($uploadDirectory)) {
             mkdir($uploadDirectory, 0777, true);
