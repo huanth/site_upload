@@ -1,6 +1,7 @@
 <?php
 // Start output buffering
 ob_start();
+date_default_timezone_set('Asia/Ho_Chi_Minh');
 
 // Config database
 include 'config/config.php';

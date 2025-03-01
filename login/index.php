@@ -74,6 +74,10 @@ $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
             <div class="text-center mt-4">
                 <a href="/register" class="text-blue-500 hover:underline">Chưa có tài khoản? Đăng ký ngay</a>
             </div>
+
+            <div class="text-center mt-4">
+                <a href="/forgot_passowrd" class="text-blue-500 hover:underline">Bạn quên mật khẩu? Lấy lại tại đây</a>
+            </div>
         </form>
     </div>
 </div>
