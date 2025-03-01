@@ -3,7 +3,7 @@
     <form action="" method="post" enctype="multipart/form-data" id="searchForm">
         <input type="text" id="namefile" name="namefile" required="" class="block w-full text-sm text-gray-700 mb-4 border border-gray-300 rounded-lg p-2">
         <button name="search_file" type="submit" class="w-full bg-secondary text-white py-2 rounded-lg hover:bg-accent transition duration-300" id="searchButton">
-            <a href="search_file?name=demo" id="searchLink">TÌM TỆP</a>
+            TÌM TỆP
         </button>
     </form>
 </section>
@@ -22,12 +22,8 @@
             return; // Dừng lại nếu input trống
         }
 
-        // Lấy thẻ a và thay đổi thuộc tính href
-        var searchLink = document.getElementById("searchLink");
-        searchLink.href = "search_file?name=" + encodeURIComponent(searchKeyword);
-
         // Điều hướng đến URL mới với từ khóa tìm kiếm
-        window.location.href = searchLink.href;
+        window.location.href = "search_file?name=" + encodeURIComponent(searchKeyword);
     });
 
     // Xử lý sự kiện khi người dùng nhấn vào nút button
@@ -39,11 +35,7 @@
             return; // Nếu trống, không làm gì cả
         }
 
-        // Thay đổi href của thẻ a với từ khóa nhập vào
-        var searchLink = document.getElementById("searchLink");
-        searchLink.href = "search_file?name=" + encodeURIComponent(searchKeyword);
-
-        // Điều hướng đến URL với từ khóa tìm kiếm
-        window.location.href = searchLink.href;
+        // Điều hướng đến URL mới với từ khóa tìm kiếm
+        window.location.href = "search_file?name=" + encodeURIComponent(searchKeyword);
     });
 </script>
