@@ -183,13 +183,89 @@ if (isset($_GET['id'])) :
             <div class="tp1 bg-white p-4 rounded-b-lg shadow-md">
                 <div class="btm">
                     <label class="font-semibold">BBCode:</label>
-                    <input type="text" value="[url=<?= 'https://' . $home_url; ?>/file-info/<?= $id; ?>]Tải về <?= $name; ?>[/url]" class="w-full p-2 border border-gray-300 rounded mt-2" readonly="">
+                    <input type="text" id="bbcode-input" value="[url=<?= 'https://' . $home_url; ?>/file-info/<?= $id; ?>]Tải về <?= $name; ?>[/url]" class="w-full p-2 border border-gray-300 rounded mt-2" readonly="">
                 </div>
                 <div class="btm mt-3">
                     <label class="font-semibold">URL:</label>
-                    <input type="text" value="<?= 'https://' .  $home_url; ?>/file-info/<?= $id; ?>" class="w-full p-2 border border-gray-300 rounded mt-2" readonly="">
+                    <input type="text" id="url-input" value="<?= 'https://' .  $home_url; ?>/file-info/<?= $id; ?>" class="w-full p-2 border border-gray-300 rounded mt-2" readonly="">
                 </div>
             </div>
+
+            <!-- Toast container -->
+            <div id="toast-container" style="position: fixed; bottom: 10px; right: 10px; z-index: 9999;"></div>
+
+            <script>
+                // Function to copy text to clipboard
+                function copyToClipboard(id) {
+                    var copyText = document.getElementById(id);
+
+                    // Select the text field
+                    copyText.select();
+                    copyText.setSelectionRange(0, 99999); // For mobile devices
+
+                    // Copy the text inside the text field
+                    document.execCommand('copy');
+
+                    // Show toast notification
+                    showToast("Đã sao chép: " + copyText.value);
+                }
+
+                // Function to show toast notification
+                function showToast(message) {
+                    var toast = document.createElement('div');
+                    toast.textContent = message;
+                    toast.style.backgroundColor = "#333";
+                    toast.style.color = "white";
+                    toast.style.padding = "10px";
+                    toast.style.borderRadius = "5px";
+                    toast.style.marginBottom = "10px";
+                    toast.style.fontSize = "14px";
+                    toast.style.boxShadow = "0px 4px 6px rgba(0, 0, 0, 0.1)";
+                    toast.style.animation = "fadeInOut 3s forwards"; // Fade-out effect
+
+                    // Append the toast to the toast container
+                    document.getElementById("toast-container").appendChild(toast);
+
+                    // Remove the toast after 3 seconds
+                    setTimeout(function() {
+                        toast.remove();
+                    }, 3000);
+                }
+
+                // Add event listeners to the input fields to copy text on click
+                document.getElementById('bbcode-input').addEventListener('click', function() {
+                    copyToClipboard('bbcode-input');
+                });
+
+                document.getElementById('url-input').addEventListener('click', function() {
+                    copyToClipboard('url-input');
+                });
+            </script>
+
+            <style>
+                @keyframes fadeInOut {
+                    0% {
+                        opacity: 0;
+                        transform: translateY(-10px);
+                    }
+
+                    10% {
+                        opacity: 1;
+                        transform: translateY(0);
+                    }
+
+                    90% {
+                        opacity: 1;
+                        transform: translateY(0);
+                    }
+
+                    100% {
+                        opacity: 0;
+                        transform: translateY(-10px);
+                    }
+                }
+            </style>
+
 <?php else :
             echo "File bị mất hoặc không tồn tại.";
         endif;
