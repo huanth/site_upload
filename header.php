@@ -123,6 +123,8 @@ if (strpos($current_url, "/search_file") !== false) {
     <link href="/chat.css" rel="stylesheet">
     <!-- Sử dụng Font Awesome cho các biểu tượng -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1486737668365116"
+        crossorigin="anonymous"></script>
     <!-- Sử dụng Alpine.js cho tương tác -->
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer=""></script>
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@600&amp;display=swap" rel="stylesheet">
