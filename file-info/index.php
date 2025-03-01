@@ -24,10 +24,11 @@ if (isset($_POST['down'])) {
             $file = mysqli_fetch_assoc($result);
 
             $path = $file['path'];
+            $name = $file['name'];
 
             // Tải tập tin về
             $file_path = '../' . $path;
-            $file_name = basename($file_path);
+            $file_name = basename($name);
 
             header('Content-Type: application/octet-stream');
             header('Content-Disposition: attachment; filename="' . $file_name . '"');
