@@ -15,7 +15,7 @@ try {
 
     // Danh sách các sitemap con
     $sitemaps = [
-        "sitemap-pages.xml",
+        "page/sitemap-pages.xml",
     ];
 
     // Thêm từng sitemap con vào sitemap index
