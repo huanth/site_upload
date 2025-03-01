@@ -3,5 +3,6 @@ files/*
 config/config.php
 
 sitemap/sitemap.xml
+sitemap/page/*
 sitemap/user/*
 sitemap/file/*
