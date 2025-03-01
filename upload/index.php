@@ -120,7 +120,7 @@ if (isset($_POST['submit'])) {
             </div>
 
             <!-- Submit Button -->
-            <button name="submit" type="submit" class="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition duration-300 font-medium flex items-center justify-center">
+            <button name="submit" type="submit" id="upload_file" class="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition duration-300 font-medium flex items-center justify-center cursor-not-allowed opacity-50" disabled>
                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0l-4 4m4-4v12"></path>
                 </svg>
@@ -133,11 +133,14 @@ if (isset($_POST['submit'])) {
     const fileInput = document.getElementById('file');
     const fileLabel = document.getElementById('file-label');
     const fileLabelContainer = document.getElementById('file-label-container');
+    const btnUpload = document.getElementById('upload_file');
 
     fileInput.addEventListener('change', (e) => {
-        const fileName = e.target.files[0].name;
+        const file = e.target.files[0]; // Lấy tệp đã chọn
+        if (!file) return; // Kiểm tra nếu không có tệp nào được chọn
 
-        const size = e.target.files[0].size;
+        const fileName = file.name;
+        const size = file.size;
 
         // Format size to kb or mb or gb
         const kb = 1024;
@@ -155,7 +158,47 @@ if (isset($_POST['submit'])) {
             formattedSize = size + ' bytes';
         }
 
+        // Kiểm tra kích thước tệp
+        const maxSize = 30 * mb; // 30MB
+        if (size > maxSize) {
+            alert("File quá lớn, không vượt quá 30MB.");
+            e.target.value = '';
+            fileLabel.textContent = 'Chọn tệp tin cần tải lên';
+
+            // Vô hiệu hóa nút upload
+            btnUpload.classList.add('cursor-not-allowed', 'opacity-50');
+            btnUpload.setAttribute('disabled', true); // Thêm thuộc tính disabled
+
+            return; // Dừng xử lý nếu tệp quá lớn
+        }
+
+        // Kiểm tra loại tệp hợp lệ
+        const validTypes = [
+            'image/jpeg', 'image/jpg', 'image/png', 'image/gif', // Ảnh
+            'video/mp4', 'video/mpeg', 'video/avi', // Video
+            'application/zip', 'application/x-rar-compressed', 'application/x-tar', // File nén
+            'application/java-archive', 'application/x-java-archive', // JAR, JAD
+        ];
+
+        if (!validTypes.includes(file.type)) {
+            alert("Tệp không hợp lệ. Vui lòng chọn tệp ảnh, video, hoặc tệp nén.");
+            e.target.value = '';
+            fileLabel.textContent = 'Chọn tệp tin cần tải lên';
+
+            // Vô hiệu hóa nút upload
+            btnUpload.classList.add('cursor-not-allowed', 'opacity-50');
+            btnUpload.setAttribute('disabled', true); // Thêm thuộc tính disabled
+
+            return; // Dừng xử lý nếu tệp không hợp lệ
+        }
+
+        // Hiển thị tên tệp và kích thước
         fileLabel.textContent = fileName + ' (' + formattedSize + ')';
+
+        // Xóa lớp CSS không cho phép nhấp và kích hoạt nút upload
+        btnUpload.classList.remove('cursor-not-allowed', 'opacity-50');
+        btnUpload.removeAttribute('disabled');
+
     });
 
     // Sự kiện khi tệp được kéo vào khu vực
@@ -191,8 +234,46 @@ if (isset($_POST['submit'])) {
                 formattedSize = size + ' bytes';
             }
 
+            // Kiểm tra kích thước tệp
+            const maxSize = 30 * mb; // 30MB
+            if (size > maxSize) {
+                alert("File quá lớn, không vượt quá 30MB.");
+                e.target.value = '';
+                fileLabel.textContent = 'Chọn tệp tin cần tải lên';
+
+                // Vô hiệu hóa nút upload
+                btnUpload.classList.add('cursor-not-allowed', 'opacity-50');
+                btnUpload.setAttribute('disabled', true); // Thêm thuộc tính disabled
+
+                return; // Dừng xử lý nếu tệp quá lớn
+            }
+
+            // Kiểm tra loại tệp hợp lệ
+            const validTypes = [
+                'image/jpeg', 'image/jpg', 'image/png', 'image/gif', // Ảnh
+                'video/mp4', 'video/mpeg', 'video/avi', // Video
+                'application/zip', 'application/x-rar-compressed', 'application/x-tar', // File nén
+                'application/java-archive', 'application/x-java-archive' // JAR, JAD
+            ];
+
+            if (!validTypes.includes(file.type)) {
+                alert("Tệp không hợp lệ. Vui lòng chọn tệp ảnh, video, hoặc tệp nén.");
+                e.target.value = '';
+                fileLabel.textContent = 'Chọn tệp tin cần tải lên';
+
+                // Vô hiệu hóa nút upload
+                btnUpload.classList.add('cursor-not-allowed', 'opacity-50');
+                btnUpload.setAttribute('disabled', true); // Thêm thuộc tính disabled
+
+                return; // Dừng xử lý nếu tệp không hợp lệ
+            }
+
             // Hiển thị tên tệp đã chọn
             fileLabel.textContent = file.name + ' (' + formattedSize + ')';
+
+            // Xóa lớp CSS không cho phép nhấp và kích hoạt nút upload
+            btnUpload.classList.remove('cursor-not-allowed', 'opacity-50');
+            btnUpload.removeAttribute('disabled');
         }
     });
 </script>

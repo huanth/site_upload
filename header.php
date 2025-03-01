@@ -29,7 +29,19 @@ $description = $home_url . " - Nền tảng upload file miễn phí, dễ dàng 
 $keywords = "upload file miễn phí, chia sẻ file, tải lên file nhanh, lưu trữ trực tuyến";
 $author = "HuanTH - " . $home_url;
 
-$current_url = "http://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+$current_url = "https://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+
+if (strpos($current_url, "/admin/") !== false || strpos($current_url, "/admin") !== false) {
+    $arr_path_admin = explode("/admin/", $_SERVER['REQUEST_URI']);
+
+    if (!empty($arr_path_admin[1])) {
+        // Nếu người dùng chưa đăng nhập hoặc không có quyền admin
+        if (!isset($_SESSION['user']) || $_SESSION['user']['role'] != 1) {
+            header('Location: /admin'); // Redirect về trang /admin
+            exit(); // Ngừng thực thi mã sau khi redirect
+        }
+    }
+}
 
 if (strpos($current_url, "/file-info") !== false) {
     $file_id = $_GET['id'];
