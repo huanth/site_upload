@@ -21,7 +21,7 @@ try {
     $url->addChild('priority', '1.0');
 
     // Ghi XML ra file
-    $sitemap->asXML(__DIR__ . "./page/sitemap-pages.xml");
+    $sitemap->asXML(__DIR__ . "/page/sitemap-pages.xml");
 } catch (PDOException $e) {
     echo "Error: " . $e->getMessage();
 }

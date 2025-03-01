@@ -25,7 +25,7 @@ try {
     }
 
     // Ghi ra file sitemap.xml
-    $sitemap_users->asXML(__DIR__ . "./user/sitemap.xml");
+    $sitemap_users->asXML(__DIR__ . "/user/sitemap.xml");
 
     echo "Sitemap generated successfully!";
 } catch (PDOException $e) {
