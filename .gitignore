@@ -1,8 +1,6 @@
 # Don't add all files in folder /files
 files/*
-config/config.php
 
 sitemap/sitemap.xml
-sitemap/page/*
-sitemap/user/*
-sitemap/file/*
+sitemap/page/sitemap-pages.xml
+config/config.php
