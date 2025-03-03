@@ -140,15 +140,22 @@ if (isset($_GET['id'])) :
                 <div class="list4 font-semibold truncate max-w-[calc(100%-20px)]">Tên tập tin: <span class="font-normal"><?= htmlspecialchars($name); ?></span></div>
                 <div class="list4 font-semibold">Dung lượng: <span class="font-normal"><?= $size; ?></span></div>
                 <div class="list4 font-semibold">Thời gian tải lên: <span class="font-normal"><?= $uploaded_at; ?></span></div>
-                <div class="list4 font-semibold">Upload bởi thành viên:
+                <div class="list4 font-semibold">
+                    Upload bởi thành viên:
                     <a href="
-                    <?php if ($user['username'] === $user_uploaded) : ?>/profile<?php else : ?>
-                         https://<?= $home_url; ?>/user/<?= $user_uploaded_id; ?> 
-                    <?php endif; ?>
+                        <?php if (isset($user)) : ?>
+                            <?php if ($user['username'] === $user_uploaded) : ?>
+                                /profile
+                            <?php else : ?>
+                                https://<?= $home_url; ?>/user/<?= $user_uploaded_id; ?>
+                            <?php endif; ?>
+                        <?php else : ?>
+                            https://<?= $home_url; ?>/user/<?= $user_uploaded_id; ?>
+                        <?php endif; ?>
                     " class="text-blue-500 hover:underline">
                         <?= $user_uploaded; ?>
-                        <?php if (isset($user)) : ?>
-                            <?php if ($user['username'] === $user_uploaded) : ?>(Bạn)<?php endif; ?>
+                        <?php if (isset($user) && $user['username'] === $user_uploaded) : ?>
+                            (Bạn)
                         <?php endif; ?>
                     </a>
                 </div>
