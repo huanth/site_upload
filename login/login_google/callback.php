@@ -12,9 +12,17 @@ $client->setRedirectUri(GOOGLE_REDIRECT_URI);
 
 if (isset($_GET['code'])) {
     // Nhận mã xác thực từ Google
-    $token = $client->fetchAccessTokenWithAuthCode($_GET['code']);
+    $authCode = $_GET['code'];
 
-    if (!isset($token['error'])) {
+    try {
+        $token = $client->fetchAccessTokenWithAuthCode($authCode);
+
+        // Kiểm tra nếu có lỗi xảy ra
+        if (isset($token['error'])) {
+            echo 'Error: ' . $token['error'];
+            exit();
+        }
+
         // Lưu trữ token vào session
         $_SESSION['access_token'] = $token;
 
@@ -24,64 +32,57 @@ if (isset($_GET['code'])) {
         // Lấy thông tin người dùng
         $userData = $oauth2->userinfo->get();
 
-        $username = $userData['email'];
-        $email = $userData['email'];
-        $role = 2;
-        $exp = 0;
+        // Kiểm tra xem thông tin người dùng có hợp lệ không
+        if ($userData && isset($userData['id'])) {
+            $username = $userData['email'];
+            $email = $userData['email'];
+            $role = 2;
+            $exp = 0;
 
-        // Kiểm tra xem username hoặc email đã tồn tại chưa
-        $stmt = $conn->prepare("SELECT id FROM users WHERE email = ?");
-        $stmt->bind_param("ss", $email);
-        $stmt->execute();
-        $result = $stmt->get_result();
-
-        if ($result->num_rows > 0) {
-            // Kiểm tra user trong CSDL
-            $stmt = $conn->prepare("SELECT * FROM users WHERE email = ?");
-            $stmt->bind_param("s", $email);
+            // Kiểm tra xem username hoặc email đã tồn tại chưa
+            $stmt = $conn->prepare("SELECT id FROM users WHERE email = ?");
+            $stmt->bind_param("ss", $email);
             $stmt->execute();
             $result = $stmt->get_result();
-            $user = $result->fetch_assoc();
 
-            // Remove password from user data
-            unset($user['password']);
+            if ($result->num_rows > 0) {
+                // Kiểm tra user trong CSDL
+                $stmt = $conn->prepare("SELECT * FROM users WHERE email = ?");
+                $stmt->bind_param("s", $email);
+                $stmt->execute();
+                $result = $stmt->get_result();
+                $user = $result->fetch_assoc();
 
-            $_SESSION['user'] = $user;
+                // Remove password from user data
+                unset($user['password']);
 
-            // Redirect to index
-            header('Location: /');
-            exit;
-        } else {
-            // Thêm user vào CSDL
-            $stmt = $conn->prepare("INSERT INTO users (username, email, role, exp) VALUES (?, ?, ?, 0)");
-            $stmt->bind_param("ssi", $username, $email, $role);
-            $success = $stmt->execute();
+                $_SESSION['user'] = $user;
+            } else {
+                // Thêm user vào CSDL
+                $stmt = $conn->prepare("INSERT INTO users (username, email, role, exp) VALUES (?, ?, ?, 0)");
+                $stmt->bind_param("ssi", $username, $email, $role);
+                $success = $stmt->execute();
 
-            if ($success) {
-                $_SESSION['user'] = [
-                    'id' => $stmt->insert_id,
-                    'username' => $username,
-                    'email' => $email,
-                    'role' => $role,
-                    'exp' => $exp
-                ];
-
-                // Redirect to index
-                header('Location: /');
-                exit;
+                if ($success) {
+                    $_SESSION['user'] = [
+                        'id' => $stmt->insert_id,
+                        'username' => $username,
+                        'email' => $email,
+                        'role' => $role,
+                        'exp' => $exp
+                    ];
+                }
             }
-
-
+        } else {
+            echo "Không thể lấy thông tin người dùng.";
+            exit();
         }
-
-        // Chuyển hướng người dùng về trang chính sau khi đăng nhập thành công
-        header('Location: /');
+    } catch (Exception $e) {
+        // Nếu có lỗi, hiển thị thông báo
+        echo 'Lỗi: ' . $e->getMessage();
         exit();
-    } else {
-        // Nếu có lỗi xảy ra, hiển thị thông báo
-        echo 'Error: ' . $token['error'];
     }
 } else {
     // Nếu không có mã xác thực (code), người dùng có thể chưa đăng nhập
-    echo 'Error: No code received';
+    echo 'Lỗi: Mã xác thực không có sẵn';
 }
