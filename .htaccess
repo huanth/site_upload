@@ -4,9 +4,17 @@ RewriteBase /
 # Chuyển hướng URL từ /file-info/<id> thành index.php?id=<id>
 RewriteRule ^file-info/([0-9]+)$ file-info/index.php?id=$1 [L,QSA]
 
+# Chuyển hướng URL từ /news/<id> thành news/detail.php?id=<id>
 RewriteRule ^news/([0-9]+)$ news/detail.php?id=$1 [L,QSA]
 
-# Nếu URL không khớp với các quy tắc trên, chuyển hướng về trang 404.php
+# Chuyển hướng URL từ /user/<id> thành user/index.php?id=<id>
+RewriteRule ^user/([0-9]+)$ user/index.php?id=$1 [L,QSA]
+
+# Nếu URL không khớp với các quy tắc trên và không phải là file hoặc thư mục có thật, chuyển hướng về trang 404.php
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^.*$ 404.php [L]
+
+# Nếu URL bắt đầu với /config, chuyển hướng về trang chủ
+RewriteCond %{REQUEST_URI} ^/config
+RewriteRule ^.*$ / [R=301,L]

@@ -44,7 +44,7 @@ if (strpos($current_url, "/admin/") !== false || strpos($current_url, "/admin") 
 }
 
 if (strpos($current_url, "/file-info") !== false) {
-    $file_id = $_GET['id'];
+    $file_id = isset($_GET['id']) ? $_GET['id'] : 0;
 
     $sql = "SELECT * FROM files WHERE id = ?";
 
@@ -92,6 +92,31 @@ if (strpos($current_url, "/search_file") !== false) {
         $description = "Tìm kiếm: " . $name;
         $keywords = $name;
     }
+}
+
+if (strpos($current_url, "/user/") !== false && strpos($current_url, "/admin/user") == 0) {
+
+    if (isset($_GET['id'])) :
+        $id = $_GET['id'] ?? '';
+
+        $sql = "SELECT * FROM users WHERE id = ?";
+        if ($stmt = mysqli_prepare($conn, $sql)) {
+            mysqli_stmt_bind_param($stmt, 'i', $id);
+
+            mysqli_stmt_execute($stmt);
+
+            $result = mysqli_stmt_get_result($stmt);
+
+            if (mysqli_num_rows($result) > 0) {
+                $user_profile = mysqli_fetch_assoc($result);
+
+                $title = "Hồ sơ " . $user_profile['username'] . " - " . $home_url;
+                $description = "Hồ sơ " . $user_profile['username'] . " - Nền tảng upload file miễn phí, dễ dàng và nhanh chóng. Hỗ trợ tải lên và chia sẻ tập tin nhanh nhất.";
+                $keywords = $user_profile['username'];
+            }
+        }
+
+    endif;
 }
 
 ?>

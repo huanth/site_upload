@@ -105,8 +105,8 @@ if (isset($_GET['id'])) :
                 // Lấy kết quả truy vấn
                 $result = mysqli_stmt_get_result($stmt);
 
-                $user = mysqli_fetch_assoc($result);
-                $user_uploaded = $user['username'];
+                $user_upload = mysqli_fetch_assoc($result);
+                $user_uploaded = $user_upload['username'];
             }
 
             $password = $file['password'];
@@ -114,12 +114,19 @@ if (isset($_GET['id'])) :
             // Check xem nếu file là ảnh thì hiển thị nút xem trước
             if (strpos($type, 'image') !== false) {
                 $preview = true;
+                $is_exists = false;
 
                 $pathPreview = 'https://' . $home_url . '/' . htmlspecialchars($path);
 
-                $base64img = base64_encode(file_get_contents($pathPreview));
-                $type = pathinfo($pathPreview, PATHINFO_EXTENSION);
-                $pathPreview = 'data:image/' . $type . ';base64,' . $base64img;
+                // Kiểm tra xem hình ảnh có tồn tại không
+                if (@getimagesize($pathPreview)) {
+                    $is_exists = true;
+                    $base64img = base64_encode(file_get_contents($pathPreview));
+                    $type = pathinfo($pathPreview, PATHINFO_EXTENSION);
+                    $pathPreview = 'data:image/' . $type . ';base64,' . $base64img;
+                } else {
+                    $is_exists = false;
+                }
             } else {
                 $preview = false;
             }
@@ -130,52 +137,77 @@ if (isset($_GET['id'])) :
             </div>
 
             <div class="tp1 bg-white p-4 rounded-b-lg shadow-md">
-                <div class="list4 font-semibold">Tên tập tin: <span class="font-normal"><?= htmlspecialchars($name); ?></span></div>
+                <div class="list4 font-semibold truncate max-w-[calc(100%-20px)]">Tên tập tin: <span class="font-normal"><?= htmlspecialchars($name); ?></span></div>
                 <div class="list4 font-semibold">Dung lượng: <span class="font-normal"><?= $size; ?></span></div>
                 <div class="list4 font-semibold">Thời gian tải lên: <span class="font-normal"><?= $uploaded_at; ?></span></div>
                 <div class="list4 font-semibold">Upload bởi thành viên: <span class="font-normal text-red-700"><?= $user_uploaded; ?></span></div>
 
                 <?php if ($preview == true) : ?>
-                    <div class="list4 text-center mt-3">
-                        <p>Hình ảnh xem trước:</p>
-                        <img src="<?= $pathPreview; ?>" alt="Preview" class=" mt-3" id="previewImage" style="margin-left: auto; margin-right: auto;">
-                    </div>
+                    <?php if ($is_exists == false) : ?>
+                        <div class="list4 text-center mt-3">
+                            <p class="text-red-700"><i class="fa-solid fa-triangle-exclamation"></i> Xin lỗi, chúng tôi đã làm mất hình ảnh của bạn!</p>
+                        </div>
+                    <?php else : ?>
+                        <div class="list4 text-center mt-3">
+                            <p>Hình ảnh xem trước:</p>
+                            <img src="<?= $pathPreview; ?>" alt="Preview" class=" mt-3" id="previewImage" style="margin-left: auto; margin-right: auto;">
+                        </div>
+                    <?php endif; ?>
                 <?php endif; ?>
 
-                <?php if (!empty($password)) : ?>
-                    <div class="glist mt-4">
-                        <form method="POST">
-                            <input type="hidden" name="file_id" value="<?= $id; ?>">
+                <?php if ($is_exists == true) : ?>
+                    <?php if (!empty($password)) : ?>
+                        <div class="glist mt-4">
+                            <form method="POST">
+                                <input type="hidden" name="file_id" value="<?= $id; ?>">
 
-                            <div class="list4">
-                                <label for="password" class="font-semibold">Mật khẩu:</label>
-                                <input type="password" id="password" name="password" required="" class="block w-full p-2 border border-gray-300 rounded mt-2"><br>
-                                <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 rounded-lg text-sm">
-                                    <span class="block">* Tập tin này yêu cầu mật khẩu để tải về.</span>
+                                <div class="list4">
+                                    <label for="password" class="font-semibold">Mật khẩu:</label>
+                                    <input type="password" id="password" name="password" required="" class="block w-full p-2 border border-gray-300 rounded mt-2"><br>
+                                    <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 rounded-lg text-sm">
+                                        <span class="block">* Tập tin này yêu cầu mật khẩu để tải về.</span>
+                                    </div>
                                 </div>
+
+                                <button class="buttonDownload bg-green-600 text-white px-4 py-2 rounded-lg mt-3 hover:bg-green-700 transition" name="down">Tải Về</button>
+
+                                <?php if (isset($user)) : ?>
+                                    <?php if ($user['username'] === $user_uploaded || $user['role'] == 1) : ?>
+                                        <a href="delete_permanent_file.php?id=<?= $file['id']; ?>" onclick="return confirm('Bạn có chắc chắn muốn xóa file này?');" class="text-gray-400 hover:text-red-500 p-2 rounded-full hover:bg-red-50 dark:hover:bg-red-900/30 transition-colors">
+                                            <i class="fas fa-trash"></i> Xóa Tập Tin
+                                        </a>
+                                    <?php endif; ?>
+                                <?php endif; ?>
+
+                            </form>
+                            <br>
+                            <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded-lg text-sm">
+                                <strong class="font-bold">LƯU Ý:</strong>
+                                <span class="block">* <?= $home_url; ?> không chịu trách nhiệm về nội dung tải lên.</span>
                             </div>
-
-                            <button class="buttonDownload bg-green-600 text-white px-4 py-2 rounded-lg mt-3 hover:bg-green-700 transition" name="down">Tải Về</button>
-                        </form>
-                        <br>
-                        <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded-lg text-sm">
-                            <strong class="font-bold">LƯU Ý:</strong>
-                            <span class="block">* <?= $home_url; ?> không chịu trách nhiệm về nội dung tải lên.</span>
                         </div>
-                    </div>
-                <?php else : ?>
-                    <div class="glist mt-4">
-                        <form method="POST">
-                            <input type="hidden" name="file_id" value="<?= $id; ?>">
+                    <?php else : ?>
+                        <div class="glist mt-4">
+                            <form method="POST">
+                                <input type="hidden" name="file_id" value="<?= $id; ?>">
 
-                            <button class="buttonDownload bg-green-600 text-white px-4 py-2 rounded-lg mt-3 hover:bg-green-700 transition" name="down">Tải Về</button>
-                        </form>
-                        <br>
-                        <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded-lg text-sm">
-                            <strong class="font-bold">LƯU Ý:</strong>
-                            <span class="block">* <?= $home_url; ?> không chịu trách nhiệm về nội dung tải lên.</span>
+                                <button class="buttonDownload bg-green-600 text-white px-4 py-2 rounded-lg mt-3 hover:bg-green-700 transition" name="down">Tải Về</button>
+
+                                <?php if (isset($user)) : ?>
+                                    <?php if ($user['username'] === $user_uploaded || $user['role'] == 1) : ?>
+                                        <a href="delete_permanent_file.php?id=<?= $file['id']; ?>" onclick="return confirm('Bạn có chắc chắn muốn xóa file này?');" class="text-gray-400 hover:text-red-500 p-2 rounded-full hover:bg-red-50 dark:hover:bg-red-900/30 transition-colors">
+                                            <i class="fas fa-trash"></i> Xóa Tập Tin
+                                        </a>
+                                    <?php endif; ?>
+                                <?php endif; ?>
+                            </form>
+                            <br>
+                            <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded-lg text-sm">
+                                <strong class="font-bold">LƯU Ý:</strong>
+                                <span class="block">* <?= $home_url; ?> không chịu trách nhiệm về nội dung tải lên.</span>
+                            </div>
                         </div>
-                    </div>
+                    <?php endif; ?>
                 <?php endif; ?>
             </div>
 
