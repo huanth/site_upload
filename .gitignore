@@ -6,3 +6,4 @@ sitemap/page/sitemap-pages.xml
 config/config.php
 vendor/
 composer.lock
+login/login_google/config.php
