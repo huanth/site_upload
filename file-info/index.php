@@ -192,7 +192,7 @@ if (isset($_GET['id'])) :
                                 <button class="buttonDownload bg-green-600 text-white px-4 py-2 rounded-lg mt-3 hover:bg-green-700 transition" name="down">Tải Về</button>
 
                                 <?php if (isset($user)) : ?>
-                                    <?php if ($user['username'] === $user_uploaded || $user['role'] == 1) : ?>
+                                    <?php if ($user['username'] === $user_uploaded || $user['role'] == 1 || $user['role'] == 0) : ?>
                                         <a href="delete_permanent_file.php?id=<?= $file['id']; ?>" onclick="return confirm('Bạn có chắc chắn muốn xóa file này?');" class="text-gray-400 hover:text-red-500 p-2 rounded-full hover:bg-red-50 dark:hover:bg-red-900/30 transition-colors">
                                             <i class="fas fa-trash"></i> Xóa Tập Tin
                                         </a>
@@ -214,7 +214,7 @@ if (isset($_GET['id'])) :
                                 <button class="buttonDownload bg-green-600 text-white px-4 py-2 rounded-lg mt-3 hover:bg-green-700 transition" name="down">Tải Về</button>
 
                                 <?php if (isset($user)) : ?>
-                                    <?php if ($user['username'] === $user_uploaded || $user['role'] == 1) : ?>
+                                    <?php if ($user['username'] === $user_uploaded || $user['role'] == 1 || $user['role'] == 0) : ?>
                                         <a href="delete_permanent_file.php?id=<?= $file['id']; ?>" onclick="return confirm('Bạn có chắc chắn muốn xóa file này?');" class="text-gray-400 hover:text-red-500 p-2 rounded-full hover:bg-red-50 dark:hover:bg-red-900/30 transition-colors">
                                             <i class="fas fa-trash"></i> Xóa Tập Tin
                                         </a>

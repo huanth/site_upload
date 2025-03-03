@@ -36,7 +36,7 @@ if (strpos($current_url, "/admin/") !== false || strpos($current_url, "/admin") 
 
     if (!empty($arr_path_admin[1])) {
         // Nếu người dùng chưa đăng nhập hoặc không có quyền admin
-        if (!isset($_SESSION['user']) || $_SESSION['user']['role'] != 1) {
+        if (!isset($_SESSION['user']) || $_SESSION['user']['role'] != 1 && $_SESSION['user']['role'] != 0) {
             header('Location: /admin'); // Redirect về trang /admin
             exit(); // Ngừng thực thi mã sau khi redirect
         }

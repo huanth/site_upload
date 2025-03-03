@@ -5,7 +5,7 @@
 // Check nếu chọn Đăng nhập bằng tài khoản user khác
 if (isset($_POST['login_with'])) {
     // Check lại role
-    if ($user['role'] != 1) {
+    if ($user['role'] != 1 && $user['id'] != 0) {
         header('Location: /user/' . $user['id']);
     }
 
@@ -94,7 +94,7 @@ if (isset($_GET['id'])) :
             </div>
 
             <?php if (isset($user)) : ?>
-                <?php if ($user['role'] == 1) : ?>
+                <?php if ($user['role'] == 0 || $user['role'] == 1) : ?>
                     <form action="" method="post" enctype="multipart/form-data">
                         <input type="hidden" name="id_user" value="<?= $user_profile['id'] ?>">
                         <button type="submit" name="login_with" class="bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition mt-4">Đăng nhập tài khoản này</button>
