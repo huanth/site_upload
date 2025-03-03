@@ -36,6 +36,7 @@ if (isset($_GET['code'])) {
         if ($userData && isset($userData['id'])) {
             $username = $userData['email'];
             $email = $userData['email'];
+            $password = rand(0, 1000000);
             $role = 2;
             $exp = 0;
 
@@ -59,8 +60,9 @@ if (isset($_GET['code'])) {
                 $_SESSION['user'] = $user;
             } else {
                 // Thêm user vào CSDL
-                $stmt = $conn->prepare("INSERT INTO users (username, email, role, exp) VALUES (?, ?, ?, 0)");
-                $stmt->bind_param("ssi", $username, $email, $role);
+                $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+                $stmt = $conn->prepare("INSERT INTO users (username, email, role, exp, password) VALUES (?, ?, ?, ?, ?)");
+                $stmt->bind_param("ssiss", $username, $email, $role, $exp, $hashed_password);
                 $success = $stmt->execute();
 
                 if ($success) {
