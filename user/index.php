@@ -2,7 +2,33 @@
 
 <?php
 
+// Check nếu chọn Đăng nhập bằng tài khoản user khác
+if (isset($_POST['login_with'])) {
+    // Check lại role
+    if ($user['role'] != 1) {
+        header('Location: /user/' . $user['id']);
+    }
+
+    $id_user = (int) $_POST['id_user'];
+
+    $stmt = $conn->prepare("SELECT * FROM users WHERE id = ?");
+    $stmt->bind_param("i", $id_user);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $user_login = $result->fetch_assoc();
+
+    if ($user) {
+        $_SESSION['user'] = $user_login;
+        header('Location: /');
+    }
+}
+
 if (isset($_GET['id'])) :
+
+    // Check user đang xem có phải là user hiện tại không
+    if (isset($user) && $user['id'] == $id) {
+        header('Location: /profile');
+    }
 
     $role = (int) $user_profile['role'];
 
@@ -43,15 +69,12 @@ if (isset($_GET['id'])) :
         $pro_vip = 1;
     }
 
-
     // Get Gravatar
     $email = strtolower(trim($user_profile['email']));
     $hash = md5($email);
     $avatar = "https://www.gravatar.com/avatar/$hash?s=200&d=identicon";
 
 ?>
-
-
     <section class="mb-6">
         <div class="max-w-2xl mx-auto bg-white shadow-lg rounded-lg overflow-hidden mt-6 p-6 text-center">
             <h2 class="text-2xl font-bold text-gray-800">👤 Hồ sơ cá nhân</h2>
@@ -69,6 +92,15 @@ if (isset($_GET['id'])) :
             <div class="mt-3">
                 <p class="text-gray-700 font-medium">🔹 Cấp bậc hiện tại: <span class="font-semibold text-blue-700"><?= $cap_bac; ?></span></p>
             </div>
+
+            <?php if (isset($user)) : ?>
+                <?php if ($user['role'] == 1) : ?>
+                    <form action="" method="post" enctype="multipart/form-data">
+                        <input type="hidden" name="id_user" value="<?= $user_profile['id'] ?>">
+                        <button type="submit" name="login_with" class="bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition mt-4">Đăng nhập tài khoản này</button>
+                    </form>
+                <?php endif; ?>
+            <?php endif; ?>
 
         </div>
     </section>

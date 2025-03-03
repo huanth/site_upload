@@ -1,7 +1,7 @@
 <?php include '../../header.php'; ?>
 
 <?php if (isset($_SESSION['user'])) :
-    if ($_SESSION['user']['role'] == 1) :
+    if ($_SESSION['user']['role'] == 1 || $_SESSION['user']['role'] == 0) :
 
         $user = $_SESSION['user'] ?? null;
 

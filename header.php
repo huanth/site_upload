@@ -335,7 +335,7 @@ if (strpos($current_url, "/user/") !== false && strpos($current_url, "/admin/use
                                 <b>Trang Cá Nhân</b>
                             </a>
 
-                            <?php if ($_SESSION['user']['role'] == 1) : ?>
+                            <?php if ($_SESSION['user']['role'] == 1 || $_SESSION['user']['role'] == 0) : ?>
                                 <a href="/admin" class="flex items-center px-4 py-2 hover:bg-gray-100 rounded-lg transition" title="Trang quản trị">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>

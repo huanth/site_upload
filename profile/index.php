@@ -11,7 +11,7 @@ if (!$user) {
 $role = (int) $user['role'];
 
 // Lấy thông tin vai trò
-$stmt = $conn->prepare("SELECT position FROM roles WHERE id = ?");
+$stmt = $conn->prepare("SELECT position FROM roles WHERE role_id = ?");
 $stmt->bind_param("i", $role);
 $stmt->execute();
 $result = $stmt->get_result();

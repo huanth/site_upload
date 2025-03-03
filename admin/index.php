@@ -1,7 +1,7 @@
 <?php include '../header.php'; ?>
 
 <?php if (isset($_SESSION['user'])) :
-    if ($_SESSION['user']['role'] == 1) : ?>
+    if ($_SESSION['user']['role'] == 1 || $_SESSION['user']['role'] == 0) : ?>
         <section class="mb-6">
             <h2 class="text-xl font-semibold mb-4 border-b-2 border-primary pb-2">
                 QUẢN TRỊ HỆ THỐNG
