@@ -71,6 +71,18 @@ $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
             </div>
             <button type="submit" class="w-full bg-primary text-white py-2 rounded-lg hover:bg-green-700 transition">Đăng nhập</button>
 
+            <!-- Login with Google -->
+            <a href="/login/login_google/google-login.php" class="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-700 transition flex items-center justify-center">
+                <i class="fab fa-google mr-2"></i>
+                Đăng nhập bằng Google
+            </a>
+
+            <!-- Login with Facebook -->
+            <a href="/login/login_facebook/facebook-login.php" class="w-full bg-blue-700 text-white py-2 rounded-lg hover:bg-blue-900 transition flex items-center justify-center">
+                <i class="fab fa-facebook-square mr-2"></i>
+                Đăng nhập bằng Facebook
+            </a>
+
             <div class="text-center mt-4">
                 <a href="/register" class="text-blue-500 hover:underline">Chưa có tài khoản? Đăng ký ngay</a>
             </div>

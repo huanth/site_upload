@@ -4,3 +4,5 @@ files/*
 sitemap/sitemap.xml
 sitemap/page/sitemap-pages.xml
 config/config.php
+vendor/
+composer.lock
