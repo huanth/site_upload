@@ -41,7 +41,7 @@ if (isset($_GET['code'])) {
 
             // Kiểm tra xem username hoặc email đã tồn tại chưa
             $stmt = $conn->prepare("SELECT id FROM users WHERE email = ?");
-            $stmt->bind_param("ss", $email);
+            $stmt->bind_param("s", $email);
             $stmt->execute();
             $result = $stmt->get_result();
 
