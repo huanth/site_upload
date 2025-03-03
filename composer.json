@@ -1,5 +1,7 @@
 {
-    "require": {
-        "google/apiclient": "2.0"
-    }
+  "require": {
+    "guzzlehttp/guzzle": "^6.5",
+    "guzzlehttp/psr7": "^1.6",
+    "google/apiclient": "^2.0"
+  }
 }
