@@ -77,6 +77,9 @@ if (isset($_GET['code'])) {
             echo "Không thể lấy thông tin người dùng.";
             exit();
         }
+
+        // Redirect to index
+        header('Location: /');
     } catch (Exception $e) {
         // Nếu có lỗi, hiển thị thông báo
         echo 'Lỗi: ' . $e->getMessage();
