@@ -31,8 +31,10 @@ if (isset($_GET['code'])) {
             'picture' => $userData['picture']
         ];
 
+        $_SESSION['info'] = $userData;
+
         // Chuyển hướng người dùng về trang chính sau khi đăng nhập thành công
-        header('Location: ../index.php');
+        header('Location: /');
         exit();
     } else {
         // Nếu có lỗi xảy ra, hiển thị thông báo

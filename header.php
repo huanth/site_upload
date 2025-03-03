@@ -16,6 +16,10 @@ if (isset($_SESSION['user'])) {
     $_SESSION['user'] = $user;
 }
 
+if (isset($_SESSION['info'])) {
+    print_r($_SESSION['info']);
+}
+
 // Load config
 $sql_config = "SELECT * FROM config WHERE `key` = 'home_url'";
 $result_config = mysqli_query($conn, $sql_config);
