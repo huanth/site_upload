@@ -37,6 +37,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     // Kiểm tra mật khẩu
     if ($user && password_verify($password, $user['password'])) {
+
+        // Remove password from user data
+        unset($user['password']);
+
         $_SESSION['user'] = $user;
 
         // Redirect to index 
