@@ -91,13 +91,13 @@ if (isset($_GET['id'])) :
             $type = $file['type'];
             $path = $file['path'];
             $uploaded_at = date('d-m-Y H:i:s', strtotime($file['date_create'])); // Định dạng lại thời gian
-            $user_uploaded = $file['user'];
+            $user_uploaded_id = $file['user'];
 
             // Lấy thông tin người dùng đã tải lên file
             $sql = "SELECT * FROM users WHERE id = ?";
             if ($stmt = mysqli_prepare($conn, $sql)) {
                 // Gắn giá trị tham số vào câu truy vấn
-                mysqli_stmt_bind_param($stmt, 'i', $user_uploaded);
+                mysqli_stmt_bind_param($stmt, 'i', $user_uploaded_id);
 
                 // Thực thi câu truy vấn
                 mysqli_stmt_execute($stmt);
@@ -140,7 +140,20 @@ if (isset($_GET['id'])) :
                 <div class="list4 font-semibold truncate max-w-[calc(100%-20px)]">Tên tập tin: <span class="font-normal"><?= htmlspecialchars($name); ?></span></div>
                 <div class="list4 font-semibold">Dung lượng: <span class="font-normal"><?= $size; ?></span></div>
                 <div class="list4 font-semibold">Thời gian tải lên: <span class="font-normal"><?= $uploaded_at; ?></span></div>
-                <div class="list4 font-semibold">Upload bởi thành viên: <span class="font-normal text-red-700"><?= $user_uploaded; ?></span></div>
+                <div class="list4 font-semibold">Upload bởi thành viên:
+                    <a href="
+                    <?php if ($user['username'] === $user_uploaded) : ?>/profile<?php else : ?>
+                         https://<?= $home_url; ?>/user/<?= $user_uploaded_id; ?> 
+                    <?php endif; ?>
+                    " class="text-blue-500 hover:underline">
+                        <?= $user_uploaded; ?>
+                        <?php if (isset($user)) : ?>
+                            <?php if ($user['username'] === $user_uploaded) : ?>(Bạn)<?php endif; ?>
+                        <?php endif; ?>
+                    </a>
+                </div>
+
+
 
                 <?php if ($preview == true) : ?>
                     <?php if ($is_exists == false) : ?>
