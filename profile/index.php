@@ -127,7 +127,9 @@ $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
         </div>
 
         <h3 class="text-xl font-semibold text-gray-800 mt-3"><?= $user['username'] ?></h3>
-        <p class="text-gray-600 text-sm">📧 <?= $user['email'] ?></p>
+        <p class="text-gray-600 text-sm">
+            <a href="mailto:<?= $user['email'] ?>" class="text-blue-500">📧 <?= $user['email'] ?></a>
+        </p>
         <p class="text-gray-600 text-sm">ID: <?= $user['id'] ?></p>
 
         <div class="mt-3">

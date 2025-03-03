@@ -61,34 +61,13 @@ if (isset($_GET['id'])) :
             </div>
 
             <h3 class="text-xl font-semibold text-gray-800 mt-3"><?= $user_profile['username'] ?></h3>
-            <p class="text-gray-600 text-sm">📧 <?= $user_profile['email'] ?></p>
+            <p class="text-gray-600 text-sm">
+                <a href="mailto:<?= $user_profile['email'] ?>" class="text-blue-500">📧 <?= $user_profile['email'] ?></a>
+            </p>
             <p class="text-gray-600 text-sm">ID: <?= $user_profile['id'] ?></p>
 
             <div class="mt-3">
                 <p class="text-gray-700 font-medium">🔹 Cấp bậc hiện tại: <span class="font-semibold text-blue-700"><?= $cap_bac; ?></span></p>
-                <?php if ($pro_vip == 0) : ?>
-                    <p class="text-gray-700 font-medium">🔸 Cấp bậc tiếp theo: <span class="font-semibold text-red-700"><?= $next_cap_bac['cap_bac']; ?> (<?= $next_cap_bac['exp']; ?> Exp )</span>
-                    <?php else : ?>
-                    <p class="text-gray-700 font-medium">Bạn đã đứng ở đỉnh cao thế gian rồi, chúc mừng bạn!</p>
-                <?php endif; ?>
-            </div>
-
-            <!-- Rank Progress Bar -->
-            <div class=" w-full bg-gray-200 rounded-full h-4 mt-3">
-                <div class="bg-blue-500 h-4 rounded-full" style="width: <?= $percent ?>%"></div>
-            </div>
-            <p class="text-gray-600 text-sm mt-1">Tiến trình: <?= $percent ?>%</p>
-
-            <!-- User Statistics -->
-            <div class="grid grid-cols-2 gap-4 mt-6 text-sm">
-                <div class="bg-blue-100 p-4 rounded-lg shadow-sm">
-                    <p class="font-medium text-gray-700">⭐ Kinh nghiệm:</p>
-                    <p class="text-blue-600 text-lg font-bold"><?= $exp . ' Exp' ?></p>
-                </div>
-                <div class="bg-green-100 p-4 rounded-lg shadow-sm">
-                    <p class="font-medium text-gray-700">🏆 Quyền hạn:</p>
-                    <p class="text-green-600 text-lg font-bold"><?= $roleName ?></p>
-                </div>
             </div>
 
         </div>
