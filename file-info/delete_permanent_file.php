@@ -1,18 +1,18 @@
-<?php include '../../header.php'; ?>
+<?php include '../header.php'; ?>
 
 <?php
 if (isset($_GET['id'])) {
     $file_id = $_GET['id'];
 
-    // Kiểm tra session nếu người dùng đã đăng nhập vai trò admin
-    if (!isset($_SESSION['user']['id']) && $_SESSION['user']['role'] != 1 && $_SESSION['user']['id'] != 0) {
-        echo '<div class="alert alert-danger" role="alert">Có lỗi xảy ra.</div>';
+    // Kiểm tra session nếu người dùng đã đăng nhập
+    if (!isset($_SESSION['user']['id'])) {
+        echo '<div class="alert alert-danger" role="alert">Bạn cần đăng nhập trước.</div>';
         exit();
     }
 
-    // Kiểm tra page là từ thư mục /admin/
+    // Kiểm tra page là từ thư mục /file-info/
     $previous = $_SERVER['HTTP_REFERER'] ?? '';
-    if (strpos($previous, "https://" . $_SERVER['HTTP_HOST'] . "/admin/files/") !== false) {
+    if (strpos($previous, "https://" . $_SERVER['HTTP_HOST'] . "/file-info/") !== false) {
 
         // Sử dụng prepared statement để bảo vệ khỏi SQL Injection
         $sql_file = "SELECT * FROM files WHERE id = ?";
@@ -23,15 +23,16 @@ if (isset($_GET['id'])) {
             $row_file = mysqli_fetch_assoc($result_file);
 
             if (!$row_file) {
-                echo '<div class="alert alert-danger" role="alert">File not found.</div>';
+                echo '<div class="alert alert-danger" role="alert">File không tồn tại.</div>';
                 exit();
             }
 
             // Kiểm tra quyền của người dùng
-            if ($_SESSION['user']['role'] != 1 && $_SESSION['user']['role'] != 0) {
-                echo 'Xoá file không thành công.';
-                echo '<div class="alert alert-danger" role="alert">Bạn không có quyền xoá file này.</div>';
-                exit();
+            if ($row_file['user'] != $_SESSION['user']['id']) {
+                if ($_SESSION['user']['role'] != 1 && $_SESSION['user']['role'] != 0) {
+                    echo '<div class="alert alert-danger" role="alert">Bạn không có quyền xoá file này.</div>';
+                    exit();
+                }
             }
 
             // Thực hiện xóa file trong cơ sở dữ liệu
@@ -49,22 +50,22 @@ if (isset($_GET['id'])) {
                 }
 
                 if ($delete_result) {
-                    echo '<div class="alert alert-success" role="alert">File deleted successfully.</div>';
-                    header("Location: " . $previous);
-                    exit();  // Dừng mọi xử lý sau khi chuyển hướng
+                    echo '<div class="alert alert-success" role="alert">File đã được xoá thành công.</div>';
+                    // header("Location: " . $previous);
+                    // exit();  // Dừng mọi xử lý sau khi chuyển hướng
                 } else {
-                    echo '<div class="alert alert-danger" role="alert">Error deleting file.</div>';
+                    echo '<div class="alert alert-danger" role="alert">Lỗi khi xoá file.</div>';
                 }
             }
         }
     } else {
-        echo '<div class="alert alert-danger" role="alert">You are not allowed to delete files from this page.</div>';
+        echo '<div class="alert alert-danger" role="alert">Bạn không có quyền xoá file từ trang này.</div>';
     }
 }
 ?>
 
 <div class="container">
-    <a href="javascript:history.go(-1)" class="btn btn-primary mt-3">Go back</a>
+    <a href="javascript:history.go(-2)" class="btn btn-primary mt-3">Trở lại</a>
 </div>
 
-<?php include '../../footer.php'; ?>
+<?php include '../footer.php'; ?>

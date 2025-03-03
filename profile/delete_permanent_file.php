@@ -6,7 +6,7 @@ if (isset($_GET['id'])) {
 
     // Kiểm tra session nếu người dùng đã đăng nhập
     if (!isset($_SESSION['user']['id'])) {
-        echo '<div class="alert alert-danger" role="alert">You need to log in first.</div>';
+        echo '<div class="alert alert-danger" role="alert">Bạn cần đăng nhập trước.</div>';
         exit();
     }
 

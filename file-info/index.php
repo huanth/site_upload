@@ -167,6 +167,14 @@ if (isset($_GET['id'])) :
                         <div class="list4 text-center mt-3">
                             <p class="text-red-700"><i class="fa-solid fa-triangle-exclamation"></i> Xin lỗi, chúng tôi đã làm mất hình ảnh của bạn!</p>
                         </div>
+
+                        <?php if (isset($user)) : ?>
+                            <?php if ($user['username'] === $user_uploaded || $user['role'] == 1 || $user['role'] == 0) : ?>
+                                <a href="delete_permanent_file.php?id=<?= $file['id']; ?>" onclick="return confirm('Bạn có chắc chắn muốn xóa file này?');" class="text-gray-400 hover:text-red-500 p-2 rounded-full hover:bg-red-50 dark:hover:bg-red-900/30 transition-colors">
+                                    <i class="fas fa-trash"></i> Xóa Tập Tin
+                                </a>
+                            <?php endif; ?>
+                        <?php endif; ?>
                     <?php else : ?>
                         <div class="list4 text-center mt-3">
                             <p>Hình ảnh xem trước:</p>
