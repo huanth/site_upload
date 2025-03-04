@@ -169,6 +169,13 @@ $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
             <?php endif; ?>
         </div>
 
+        <!-- Show ip user, danh cho admin -->
+        <?php if (isset($user) && $user['role'] == 0) : ?>
+            <div class="mt-3">
+                <p class="text-gray-700 font-medium">🔹 IP: <span class="font-semibold text-blue-700"><?= $user['ip']; ?></span></p>
+            </div>
+        <?php endif; ?>
+
         <!-- Rank Progress Bar -->
         <div class=" w-full bg-gray-200 rounded-full h-4 mt-3">
             <div class="bg-blue-500 h-4 rounded-full" style="width: <?= $percent ?>%"></div>
