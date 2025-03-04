@@ -23,6 +23,59 @@ if (isset($_POST['login_with'])) {
     }
 }
 
+// Check nếu chọn Ban user
+if (isset($_POST['ban_user'])) {
+    // Check lại role
+    if ($user['role'] != 1 && $user['role'] != 0) {
+        echo '<div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 mb-4 rounded relative" role="alert">
+                <strong class="font-bold">Lỗi!</strong>
+                <span class="block sm:inline">Bạn không có quyền ban user.</span>
+            </div>';
+    }
+
+    $id_user_admin = (int) $_POST['id_user_admin']; // ban by
+    $id_user_ban = (int) $_POST['id_user_ban']; // user
+    $type_ban = (int) $_POST['role_user_ban']; // type ban
+    $ban_time_end = $_POST['ban_time_end']; // time end
+    $li_do = $_POST['li_do']; // lí do
+    $is_ban = 1;
+
+    $stmt = $conn->prepare("INSERT INTO ban (user, is_ban, type_ban, time_end, li_do, ban_by) VALUES (?, ?, ?, ?, ?, ?)");
+    $stmt->bind_param("iiisss", $id_user_ban, $is_ban, $type_ban, $ban_time_end, $li_do, $id_user_admin);
+    $stmt->execute();
+
+    header('Location: /user/' . $id_user_ban);
+}
+
+// Check nếu chọn Unban user
+if (isset($_POST['unban_user'])) {
+    // Check lại role
+    if ($user['role'] != 1 && $user['role'] != 0) {
+        echo '<div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 mb-4 rounded relative" role="alert">
+                <strong class="font-bold">Lỗi!</strong>
+                <span class="block sm:inline">Bạn không có quyền unban user.</span>
+            </div>';
+    }
+
+    $id_user = (int) $_POST['id_user'];
+
+    $stmt = $conn->prepare("UPDATE ban SET is_ban = 0 WHERE user = ?");
+    $stmt->bind_param("i", $id_user);
+    $stmt->execute();
+
+    header('Location: /user/' . $id_user);
+}
+
+
+// Check user có bị ban không
+$sql_ban = "SELECT * FROM ban WHERE user = ? AND is_ban = 1 AND time_end > NOW()";
+$stmt = $conn->prepare($sql_ban);
+$stmt->bind_param("i", $id);
+$stmt->execute();
+$result = $stmt->get_result();
+$ban = $result->fetch_assoc();
+
+
 if (isset($_GET['id'])) :
 
     // Check user đang xem có phải là user hiện tại không
@@ -103,14 +156,32 @@ if (isset($_GET['id'])) :
                         <button type="submit" name="login_with" class="bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition mt-4">Đăng nhập tài khoản này</button>
                     </form>
 
-                    <!-- Ban user -->
-                    <div class="flex mt-4 justify-center">
-                        <button data-modal-target="authentication-modal" data-modal-toggle="authentication-modal" class="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
-                            Ban user này
-                        </button>
-                    </div>
+                    <?php if ($user['id'] != $user_profile['id']) : ?>
+                        <!-- Ban user -->
+                        <?php if ($ban) : ?>
+                            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 mb-4 rounded relative mt-4" role="alert">
+                                <strong class="font-bold">Lỗi!</strong>
+                                <span class="block sm:inline">User này đã bị ban.</span>
+                            </div>
 
-                    <!-- Change Password Modal -->
+                            <span class="time_end text-sm">Hết hạn: <?= $ban['time_end'] ?></span>
+
+                            <!-- Unban user -->
+                            <form action="" method="post" enctype="multipart/form-data">
+                                <input type="hidden" name="id_user" value="<?= $user_profile['id'] ?>">
+                                <button type="submit" name="unban_user" class="bg-green-500 text-white px-4 py-2 rounded-lg shadow hover:bg-green-600 transition mt-4">Unban user này</button>
+                            </form>
+
+                        <?php else : ?>
+                            <div class="flex mt-4 justify-center">
+                                <button data-modal-target="authentication-modal" data-modal-toggle="authentication-modal" class="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
+                                    Ban user này
+                                </button>
+                            </div>
+                        <?php endif; ?>
+                    <?php endif; ?>
+
+                    <!-- Ban user modal -->
                     <div id="authentication-modal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
                         <div class="relative p-4 w-full max-w-md max-h-full">
                             <!-- Modal content -->
@@ -132,23 +203,22 @@ if (isset($_GET['id'])) :
                                     <form class="space-y-4" action="" method="POST">
                                         <form method="POST" class="mt-4">
                                             <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token']; ?>">
+                                            <input type="hidden" name="id_user_admin" value="<?= $user['id'] ?>">
+                                            <input type="hidden" name="id_user_ban" value="<?= $user_profile['id'] ?>">
+                                            <input type="hidden" name="role_user_ban" value="1">
 
                                             <div class="mt-4">
-                                                <label for="old_password" class="block text-sm font-medium text-gray-700">Mật khẩu cũ</label>
-                                                <input type="password" name="old_password" id="old_password" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" required>
+                                                <label for="ban_time_end" class="block text-sm font-medium text-gray-700">Thời hạn</label>
+                                                <input type="datetime-local" name="ban_time_end" id="ban_time_end" class="w-full p-2 border border-gray-300 rounded-lg focus:ring focus:ring-green-300" required>
                                             </div>
+
                                             <div class="mt-4">
-                                                <label for="new_password" class="block text-sm font-medium text-gray-700">Mật khẩu mới</label>
-                                                <input type="password" name="new_password" id="new_password" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" required>
+                                                <label for="li_do" class="block text-sm font-medium text-gray-700">Lí do</label>
+                                                <textarea name="li_do" id="li_do" class="w-full p-2 border border-gray-300 rounded-lg focus:ring focus:ring-green-300" required></textarea>
                                             </div>
-                                            <div class="mt-4">
-                                                <label for="confirm_password" class="block text-sm font-medium text-gray-700">Xác nhận mật khẩu mới</label>
-                                                <input type="password" name="confirm_password" id="confirm_password" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:
-                                                outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm
-                                                " required>
-                                            </div>
+
                                             <div class="mt-6">
-                                                <button type="submit" name="change_password" class="w-full bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition">Lưu thay đổi</button>
+                                                <button type="submit" name="ban_user" class="w-full bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition">Ban thôi</button>
                                             </div>
                                         </form>
                                     </form>
@@ -156,10 +226,8 @@ if (isset($_GET['id'])) :
                             </div>
                         </div>
                     </div>
-
                 <?php endif; ?>
             <?php endif; ?>
-
         </div>
     </section>
 <?php else :

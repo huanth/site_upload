@@ -8,6 +8,14 @@ if (!$user) {
     exit;
 }
 
+// Check xem user có bị ban không
+$sql_ban = "SELECT * FROM ban WHERE user = ? AND time_end > NOW() AND is_ban = 1";
+$stmt_ban = $conn->prepare($sql_ban);
+$stmt_ban->bind_param("i", $user['id']);
+$stmt_ban->execute();
+$result_ban = $stmt_ban->get_result();
+$ban = $result_ban->fetch_assoc();
+
 $role = (int) $user['role'];
 
 // Lấy thông tin vai trò
@@ -113,10 +121,30 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['change_password'])) {
     }
 }
 
+function get_username_by_id($id)
+{
+    global $conn;
+    $stmt = $conn->prepare("SELECT username FROM users WHERE id = ?");
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $user = $result->fetch_assoc();
+    return $user['username'] ?? 'N/A';
+}
+
 // CSRF Token
 $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 
 ?>
+
+<?php if ($ban) : ?>
+    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 mb-4 rounded relative" role="alert">
+        <strong class="font-bold">Lỗi!</strong>
+        <span class="block sm:inline">Tài khoản của bạn đã bị khóa đến <?= date('d/m/Y H:i', strtotime($ban['time_end'])); ?>.</span> bởi <span class="italic"><?= get_username_by_id($ban['ban_by']); ?></span>
+        <br>
+        <span class="block sm:inline">Lý do: <span class="italic"><?= $ban['li_do']; ?></span></span>
+    </div>
+<?php endif; ?>
 
 <section class="mb-6">
     <div class="max-w-2xl mx-auto bg-white shadow-lg rounded-lg overflow-hidden mt-6 p-6 text-center">

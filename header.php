@@ -33,6 +33,26 @@ $description = $home_url . " - Nền tảng upload file miễn phí, dễ dàng 
 $keywords = "upload file miễn phí, chia sẻ file, tải lên file nhanh, lưu trữ trực tuyến";
 $author = "HuanTH - " . $home_url;
 
+
+// Check user ban
+if (isset($_SESSION['user'])) {
+    $sql_ban = "SELECT * FROM ban WHERE user = ? AND time_end < NOW() AND is_ban = 1";
+    $stmt_ban = $conn->prepare($sql_ban);
+    $stmt_ban->bind_param("i", $user['id']);
+    $stmt_ban->execute();
+    $result_ban = $stmt_ban->get_result();
+    $ban = $result_ban->fetch_assoc();
+
+    if ($ban) {
+
+        // Unban user
+        $sql_unban = "UPDATE ban SET is_ban = 0 WHERE id = ?";
+        $stmt_unban = $conn->prepare($sql_unban);
+        $stmt_unban->bind_param("i", $ban['id']);
+        $stmt_unban->execute();
+    }
+}
+
 $current_url = "https://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 
 if (strpos($current_url, "/admin/") !== false || strpos($current_url, "/admin") !== false) {

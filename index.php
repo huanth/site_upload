@@ -1,5 +1,18 @@
 <?php include 'header.php'; ?>
 
+<?php
+$user_ip = $_SERVER['REMOTE_ADDR']; // Lấy địa chỉ IP của người dùng
+
+// Kiểm tra nếu địa chỉ IP là từ phía sau proxy
+if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+    // Nếu có, lấy địa chỉ IP thực sự của người dùng (thường là IP của proxy)
+    $user_ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+}
+
+echo "IP của bạn: " . $user_ip;
+
+?>
+
 <?php if (isset($_SESSION['user'])) : ?>
     <?php include 'upload/index.php'; ?>
 <?php else : ?>
