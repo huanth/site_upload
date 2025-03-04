@@ -179,7 +179,7 @@ if (isset($_GET['id'])) :
             <!-- Show ip user, danh cho admin -->
             <?php if (isset($user) && $user['role'] == 0) : ?>
                 <div class="mt-3">
-                    <p class="text-gray-700 font-medium">🔹 IP: <span class="font-semibold text-blue-700"><?= $user_profile['ip']; ?></span></p>
+                    <p class="text-gray-700 font-medium">🔹 IP: <a href="https://whatismyipaddress.com/ip/<?= $user_profile['ip'] ?>" target="_blank" class="text-blue-700"><?= $user_profile['ip']; ?></a></p>
                 </div>
             <?php endif; ?>
 

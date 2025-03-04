@@ -172,7 +172,7 @@ $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
         <!-- Show ip user, danh cho admin -->
         <?php if (isset($user) && $user['role'] == 0) : ?>
             <div class="mt-3">
-                <p class="text-gray-700 font-medium">🔹 IP: <span class="font-semibold text-blue-700"><?= $user['ip']; ?></span></p>
+                <p class="text-gray-700 font-medium">🔹 IP: <a href="https://whatismyipaddress.com/ip/<?= $user['ip'] ?>" target="_blank" class="text-blue-700"><?= $user['ip']; ?></a></p>
             </div>
         <?php endif; ?>
 
