@@ -1,7 +1,5 @@
 <?php include 'header.php'; ?>
 
-<?php include 'tin-tuc.php'; ?>
-
 <?php if (isset($_SESSION['user'])) : ?>
     <?php include 'upload/index.php'; ?>
 <?php else : ?>
@@ -10,6 +8,8 @@
         <span class="block sm:inline">Hãy <a href="/login" class="text-black">đăng nhập</a> để tải lên tập tin.</span>
     </div>
 <?php endif; ?>
+
+<?php include 'blogs.php'; ?>
 
 <?php include 'tim-kiem-file.php'; ?>
 

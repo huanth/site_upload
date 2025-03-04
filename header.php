@@ -88,6 +88,26 @@ if (strpos($current_url, "/profile") !== false) {
     $keywords = $user['username'];
 }
 
+if (strpos($current_url, "/blog") !== false) {
+    $sql = "SELECT * FROM blogs WHERE id = ?";
+    if ($stmt = mysqli_prepare($conn, $sql)) {
+        $blog_id = $_GET['id'] ?? 0;
+        mysqli_stmt_bind_param($stmt, 'i', $blog_id);
+
+        mysqli_stmt_execute($stmt);
+
+        $result = mysqli_stmt_get_result($stmt);
+
+        if (mysqli_num_rows($result) > 0) {
+            $blog = mysqli_fetch_assoc($result);
+
+            $title = $blog['title'] . " - " . $home_url;
+            $description = $blog['title'] . " - " . $home_url;
+            $keywords = $blog['title'];
+        }
+    }
+}
+
 if (strpos($current_url, "/search_file") !== false) {
     if (isset($_GET['name'])) {
         $name = $_GET['name'] ?? '';
@@ -326,12 +346,6 @@ if (strpos($current_url, "/user/") !== false && strpos($current_url, "/admin/use
                 if (isset($_SESSION['user'])) : ?>
                     <div x-show="open" @click.away="open = false" class="absolute right-0 mt-2 w-48 bg-white text-gray-700 rounded-lg shadow-lg py-2" style="display: none; z-index: 9999;">
                         <div class="flex flex-col space-y-2">
-                            <a href="/news" class="flex items-center px-4 py-2 hover:bg-gray-100 rounded-lg transition">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h18M3 10h18M3 15h18M3 20h18"></path>
-                                </svg>
-                                <b>Tin Tức</b>
-                            </a>
                             <a href="/profile" class="flex items-center px-4 py-2 hover:bg-gray-100 rounded-lg transition" title="Quản lý tập tin">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-5h6v5m0 0V9a2 2 0 00-2-2H7a2 2 0 00-2 2v8h10z"></path>
@@ -362,12 +376,6 @@ if (strpos($current_url, "/user/") !== false && strpos($current_url, "/admin/use
                 <?php else : ?>
                     <div x-show="open" @click.away="open = false" class="absolute right-0 mt-2 w-48 bg-white text-gray-700 rounded-lg shadow-lg py-2" style="z-index: 9999;">
                         <div class="flex flex-col space-y-2">
-                            <a href="/news" class="flex items-center px-4 py-2 hover:bg-gray-100 rounded-lg transition">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h18M3 10h18M3 15h18M3 20h18"></path>
-                                </svg>
-                                <b>Tin Tức</b>
-                            </a>
                             <a href="/login" class="flex items-center px-4 py-2 hover:bg-gray-100 rounded-lg transition">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>

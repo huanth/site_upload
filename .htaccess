@@ -4,8 +4,8 @@ RewriteBase /
 # Chuyển hướng URL từ /file-info/<id> thành index.php?id=<id>
 RewriteRule ^file-info/([0-9]+)$ file-info/index.php?id=$1 [L,QSA]
 
-# Chuyển hướng URL từ /news/<id> thành news/detail.php?id=<id>
-RewriteRule ^news/([0-9]+)$ news/detail.php?id=$1 [L,QSA]
+# Chuyển hướng URL từ /blog/<id> thành blog/detail.php?id=<id>
+RewriteRule ^blog/([0-9]+)$ blog/detail.php?id=$1 [L,QSA]
 
 # Chuyển hướng URL từ /user/<id> thành user/index.php?id=<id>
 RewriteRule ^user/([0-9]+)$ user/index.php?id=$1 [L,QSA]
