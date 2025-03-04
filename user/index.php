@@ -178,9 +178,30 @@ if (isset($_GET['id'])) :
 
             <!-- Show ip user, danh cho admin -->
             <?php if (isset($user) && $user['role'] == 0) : ?>
+
+                <!-- Lấy thông tin IP -->
                 <div class="mt-3">
                     <p class="text-gray-700 font-medium">🔹 IP: <a href="https://whatismyipaddress.com/ip/<?= $user_profile['ip'] ?>" target="_blank" class="text-blue-700"><?= $user_profile['ip']; ?></a></p>
                 </div>
+
+                <!-- Lấy thông tin vị trí -->
+                <?php if ($user_profile['ip'] != '127.0.0.1') : ?>
+                    <?php
+                    $ip = $user_profile['ip'];
+                    $details = json_decode(file_get_contents("http://ipinfo.io/{$ip}/json"));
+                    $city = $details->city;
+                    $region = $details->region;
+                    $country = $details->country;
+                    $loc = $details->loc;
+                    $org = $details->org;
+                    $postal = $details->postal;
+                    $timezone = $details->timezone;
+                    ?>
+                    <div class="mt-3">
+                        <p class="text-gray-700 font-medium">🔹 Vị trí: <span class="font-semibold text-blue-700"><?= $city . ', ' . $region . ', ' . $country; ?></span></p>
+                    </div>
+                <?php endif; ?>
+
             <?php endif; ?>
 
             <?php if (isset($user)) : ?>
