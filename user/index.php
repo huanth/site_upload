@@ -176,6 +176,13 @@ if (isset($_GET['id'])) :
                 <p class="text-gray-700 font-medium">🔹 Cấp bậc hiện tại: <span class="font-semibold text-blue-700"><?= $cap_bac; ?></span></p>
             </div>
 
+            <!-- Show ip user, danh cho admin -->
+            <?php if (isset($user) && $user['role'] == 0) : ?>
+                <div class="mt-3">
+                    <p class="text-gray-700 font-medium">🔹 IP: <span class="font-semibold text-blue-700"><?= $user_profile['ip']; ?></span></p>
+                </div>
+            <?php endif; ?>
+
             <?php if (isset($user)) : ?>
                 <?php if ($user['role'] == 0 || $user['role'] == 1) : ?>
                     <!-- Dành cho admin và mod -->
