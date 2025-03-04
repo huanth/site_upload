@@ -176,7 +176,9 @@ if (strpos($current_url, "/user/") !== false && strpos($current_url, "/admin/use
         crossorigin="anonymous"></script>
     <!-- Sử dụng Alpine.js cho tương tác -->
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer=""></script>
+    <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@600&amp;display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
     <style>
         :root {
             --bg-primary: #121212;

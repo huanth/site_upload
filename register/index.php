@@ -81,15 +81,15 @@ $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
             <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token']; ?>">
             <div>
                 <label for="username" class="block font-semibold text-gray-700">Tài khoản:</label>
-                <input type="text" id="username" name="username" required class="w-full p-2 border border-gray-300 rounded-lg focus:ring focus:ring-green-300">
+                <input type="text" id="username" name="username" required class="w-full p-2 border border-gray-300 rounded-lg focus:ring focus:ring-green-300" placeholder="Nhập tài khoản">
             </div>
             <div>
                 <label for="password" class="block font-semibold text-gray-700">Mật khẩu:</label>
-                <input type="password" id="password" name="password" required class="w-full p-2 border border-gray-300 rounded-lg focus:ring focus:ring-green-300">
+                <input type="password" id="password" name="password" required class="w-full p-2 border border-gray-300 rounded-lg focus:ring focus:ring-green-300" placeholder="Nhập mật khẩu">
             </div>
             <div>
                 <label for="email" class="block font-semibold text-gray-700">Email:</label>
-                <input type="email" id="email" name="email" required class="w-full p-2 border border-gray-300 rounded-lg focus:ring focus:ring-green-300">
+                <input type="email" id="email" name="email" required class="w-full p-2 border border-gray-300 rounded-lg focus:ring focus:ring-green-300" placeholder="Nhập email">
             </div>
             <input type="hidden" name="role" value="2">
             <button type="submit" class="w-full bg-primary text-white py-2 rounded-lg hover:bg-green-700 transition">Đăng ký</button>

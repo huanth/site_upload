@@ -63,23 +63,29 @@ $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
         ĐĂNG NHẬP
     </div>
     <div class="bg-white p-6 rounded-b-lg shadow-md">
+        <!-- Login with Google -->
+        <a href="/login/login_google/google-login.php" class="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-700 transition flex items-center justify-center">
+            <i class="fab fa-google mr-2"></i>
+            Đăng nhập bằng Google
+        </a>
+
+        <div id="g_id_onload"
+            data-client_id="YOUR_GOOGLE_CLIENT_ID"
+            data-login_uri="https://your.domain/your_login_endpoint"
+            data-auto_select="true">
+        </div>
+
         <form method="POST" class="space-y-4">
             <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token']; ?>">
             <div>
                 <label for="username" class="block font-semibold text-gray-700">Tài khoản:</label>
-                <input type="text" id="username" name="username" required class="w-full p-2 border border-gray-300 rounded-lg focus:ring focus:ring-green-300">
+                <input type="text" id="username" name="username" required class="w-full p-2 border border-gray-300 rounded-lg focus:ring focus:ring-green-300" placeholder="Nhập tài khoản">
             </div>
             <div>
                 <label for="password" class="block font-semibold text-gray-700">Mật khẩu:</label>
-                <input type="password" id="password" name="password" required class="w-full p-2 border border-gray-300 rounded-lg focus:ring focus:ring-green-300">
+                <input type="password" id="password" name="password" required class="w-full p-2 border border-gray-300 rounded-lg focus:ring focus:ring-green-300" placeholder="********">
             </div>
             <button type="submit" class="w-full bg-primary text-white py-2 rounded-lg hover:bg-green-700 transition">Đăng nhập</button>
-
-            <!-- Login with Google -->
-            <a href="/login/login_google/google-login.php" class="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-700 transition flex items-center justify-center">
-                <i class="fab fa-google mr-2"></i>
-                Đăng nhập bằng Google
-            </a>
 
             <div class="text-center mt-4">
                 <a href="/register" class="text-blue-500 hover:underline">Chưa có tài khoản? Đăng ký ngay</a>

@@ -71,7 +71,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <form method="POST" class="space-y-4">
             <div>
                 <label for="email" class="block font-semibold text-gray-700">Email:</label>
-                <input type="email" id="email" name="email" required class="w-full p-2 border border-gray-300 rounded-lg focus:ring focus:ring-green-300">
+                <input type="email" id="email" name="email" required class="w-full p-2 border border-gray-300 rounded-lg focus:ring focus:ring-green-300" placeholder="Nhập email">
             </div>
             <button type="submit" class="w-full bg-primary text-white py-2 rounded-lg hover:bg-green-700 transition">GỬI MAIL</button>
             <div class="text-center mt-4">

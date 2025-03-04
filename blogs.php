@@ -67,7 +67,7 @@ function get_username_by_id($id)
 
     <!-- Xem thêm -->
     <div class="text-center mt-4">
-        <a href="/blogs" class="text-primary">
+        <a href="/blog" class="text-primary">
             <span class="mr-2 text-blue-500 hover:underline">Xem thêm</span>
         </a>
     </div>
