@@ -140,7 +140,7 @@ $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 <?php if ($ban) : ?>
     <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 mb-4 rounded relative" role="alert">
         <strong class="font-bold">Lỗi!</strong>
-        <span class="block sm:inline">Tài khoản của bạn đã bị khóa đến <?= date('d/m/Y H:i', strtotime($ban['time_end'])); ?>.</span> bởi <span class="italic"><?= get_username_by_id($ban['ban_by']); ?></span>
+        <span class="block sm:inline">Tài khoản của bạn đã bị khóa đến <?= date('d/m/Y H:i:s', strtotime($ban['time_end'])); ?>.</span> bởi <span class="italic"><?= get_username_by_id($ban['ban_by']); ?></span>
         <br>
         <span class="block sm:inline">Lý do: <span class="italic"><?= $ban['li_do']; ?></span></span>
     </div>

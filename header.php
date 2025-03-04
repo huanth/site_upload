@@ -8,17 +8,95 @@ include 'config/config.php';
 
 // Session check
 session_start();
+
+$user_ip = ''; // Khai báo biến chứa địa chỉ IP của người dùng
+
 if (isset($_SESSION['user'])) {
     // Update the User 
     $sql = "SELECT * FROM users WHERE id = " . $_SESSION['user']['id'];
     $result = mysqli_query($conn, $sql);
     $user = mysqli_fetch_assoc($result);
     $_SESSION['user'] = $user;
+
+    // Add IP to user
+    $user_ip = $_SERVER['REMOTE_ADDR']; // Lấy địa chỉ IP của người dùng
+
+
+    // Kiểm tra nếu địa chỉ IP là từ phía sau proxy
+    if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+        // Nếu có, lấy địa chỉ IP thực sự của người dùng (thường là IP của proxy)
+        $user_ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+    }
+
+    // Update IP
+    $sql_update_ip = "UPDATE users SET ip = ? WHERE id = ?";
+    $stmt_update_ip = $conn->prepare($sql_update_ip);
+    $stmt_update_ip->bind_param("si", $user_ip, $user['id']);
+    $stmt_update_ip->execute();
+
+    // Check ban user để unban
+    $sql_ban = "SELECT * FROM ban WHERE user = ? AND time_end < NOW() AND is_ban = 1";
+    $stmt_ban = $conn->prepare($sql_ban);
+    $stmt_ban->bind_param("i", $user['id']);
+    $stmt_ban->execute();
+    $result_ban = $stmt_ban->get_result();
+    $ban = $result_ban->fetch_assoc();
+
+    if ($ban) {
+        // Unban user
+        $sql_unban = "UPDATE ban SET is_ban = 0 WHERE id = ?";
+        $stmt_unban = $conn->prepare($sql_unban);
+        $stmt_unban->bind_param("i", $ban['id']);
+        $stmt_unban->execute();
+    }
+
+
+    // Check ban ip để unban
+    // $sql_ban_ip = "SELECT * FROM ban WHERE time_end < NOW() AND is_ban = 1 AND type_ban = 2";
+    // $stmt_ban_ip = $conn->prepare($sql_ban_ip);
+    // $stmt_ban_ip->execute();
+    // $result_ban_ip = $stmt_ban_ip->get_result();
+    // $ban_ip = $result_ban_ip->fetch_assoc();
+
+    // // Nếu $user_ip hiện tại nằm trong danh sách ip bị ban $ban_ip
+    // if ($ban_ip) {
+    //     // Unban ip
+    //     $sql_unban_ip = "UPDATE ban SET is_ban = 0 WHERE id = ?";
+    //     $stmt_unban_ip = $conn->prepare($sql_unban_ip);
+    //     $stmt_unban_ip->bind_param("i", $ban_ip['id']);
+    //     $stmt_unban_ip->execute();
+    // }
+
+
+    // // Check ban user để ban theo IP
+    // $sql_ban_user = "SELECT * FROM ban WHERE time_end > NOW() AND is_ban = 1 AND type_ban = 2";
+    // $stmt_ban_user = $conn->prepare($sql_ban_user);
+    // $stmt_ban_user->execute();
+    // $result_ban_user = $stmt_ban_user->get_result();
+    // $ban_user = $result_ban_user->fetch_assoc();
+
+    // if ($ban_user) {
+    //     // Ban IP
+    //     $time_end = $ban_user['time_end'];
+    //     $ban_by = $ban_user['ban_by'];
+    //     $li_do = $ban_user['li_do'];
+
+    //     $sql_ban_ip = "INSERT INTO ban (user, ip_ban, time_end, ban_by, li_do, type_ban, is_ban) VALUES (?, ?, ?, ?, ?, 2, 1)";
+    //     $stmt_ban_ip = $conn->prepare($sql_ban_ip);
+    //     $stmt_ban_ip->bind_param("sssis", $user['id'], $user_ip, $time_end, $ban_by, $li_do);
+    //     $stmt_ban_ip->execute();
+    // }
+
+
+    // Nếu ban là admin thì đéo bao giờ bị ban
+    if ($user['role'] == 1 || $user['role'] == 0) {
+        $sql_unban_admin = "UPDATE ban SET is_ban = 0 WHERE user = ?";
+        $stmt_unban_admin = $conn->prepare($sql_unban_admin);
+        $stmt_unban_admin->bind_param("i", $user['id']);
+        $stmt_unban_admin->execute();
+    }
 }
 
-if (isset($_SESSION['info'])) {
-    print_r($_SESSION['info']);
-}
 
 // Load config
 $sql_config = "SELECT * FROM config WHERE `key` = 'home_url'";
@@ -33,25 +111,6 @@ $description = $home_url . " - Nền tảng upload file miễn phí, dễ dàng 
 $keywords = "upload file miễn phí, chia sẻ file, tải lên file nhanh, lưu trữ trực tuyến";
 $author = "HuanTH - " . $home_url;
 
-
-// Check user ban
-if (isset($_SESSION['user'])) {
-    $sql_ban = "SELECT * FROM ban WHERE user = ? AND time_end < NOW() AND is_ban = 1";
-    $stmt_ban = $conn->prepare($sql_ban);
-    $stmt_ban->bind_param("i", $user['id']);
-    $stmt_ban->execute();
-    $result_ban = $stmt_ban->get_result();
-    $ban = $result_ban->fetch_assoc();
-
-    if ($ban) {
-
-        // Unban user
-        $sql_unban = "UPDATE ban SET is_ban = 0 WHERE id = ?";
-        $stmt_unban = $conn->prepare($sql_unban);
-        $stmt_unban->bind_param("i", $ban['id']);
-        $stmt_unban->execute();
-    }
-}
 
 $current_url = "https://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 

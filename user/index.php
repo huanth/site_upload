@@ -35,20 +35,31 @@ if (isset($_POST['ban_user'])) {
 
     $id_user_admin = (int) $_POST['id_user_admin']; // ban by
     $id_user_ban = (int) $_POST['id_user_ban']; // user
-    $type_ban = (int) $_POST['role_user_ban']; // type ban
+    $type_ban = (int) $_POST['type_ban']; // type ban
     $ban_time_end = $_POST['ban_time_end']; // time end
     $li_do = $_POST['li_do']; // lí do
     $is_ban = 1;
+    $ip_ban = $_POST['ban_ip'] ?? '';
 
-    $stmt = $conn->prepare("INSERT INTO ban (user, is_ban, type_ban, time_end, li_do, ban_by) VALUES (?, ?, ?, ?, ?, ?)");
-    $stmt->bind_param("iiisss", $id_user_ban, $is_ban, $type_ban, $ban_time_end, $li_do, $id_user_admin);
-    $stmt->execute();
+    if ($type_ban == 2) {
+        echo '<div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 mb-4 rounded relative" role="alert">
+                <strong class="font-bold">Lỗi!</strong>
+                <span class="block sm:inline">Chức năng ban theo IP đang bị tạm khóa.</span>
+            </div>';
+        // exit();
+    } else {
 
-    header('Location: /user/' . $id_user_ban);
+        $stmt = $conn->prepare("INSERT INTO ban (user, is_ban, type_ban, time_end, li_do, ban_by, ip_ban) VALUES (?, ?, ?, ?, ?, ?, ?)");
+        $stmt->bind_param("iiissss", $id_user_ban, $is_ban, $type_ban, $ban_time_end, $li_do, $id_user_admin, $ip_ban);
+        $stmt->execute();
+
+        header('Location: /user/' . $id_user_ban);
+    }
 }
 
 // Check nếu chọn Unban user
 if (isset($_POST['unban_user'])) {
+
     // Check lại role
     if ($user['role'] != 1 && $user['role'] != 0) {
         echo '<div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 mb-4 rounded relative" role="alert">
@@ -60,6 +71,25 @@ if (isset($_POST['unban_user'])) {
     $id_user = (int) $_POST['id_user'];
 
     $stmt = $conn->prepare("UPDATE ban SET is_ban = 0 WHERE user = ?");
+    $stmt->bind_param("i", $id_user);
+    $stmt->execute();
+
+    header('Location: /user/' . $id_user);
+}
+
+// Check nếu chọn Unban IP
+if (isset($_POST['unban_user_ip'])) {
+    // Check lại role
+    if ($user['role'] != 1 && $user['role'] != 0) {
+        echo '<div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 mb-4 rounded relative" role="alert">
+                <strong class="font-bold">Lỗi!</strong>
+                <span class="block sm:inline">Bạn không có quyền unban user.</span>
+            </div>';
+    }
+
+    $id_user = (int) $_POST['id_user'];
+
+    $stmt = $conn->prepare("UPDATE ban SET is_ban = 0 WHERE user = ? AND type_ban = 2");
     $stmt->bind_param("i", $id_user);
     $stmt->execute();
 
@@ -161,7 +191,12 @@ if (isset($_GET['id'])) :
                         <?php if ($ban) : ?>
                             <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 mb-4 rounded relative mt-4" role="alert">
                                 <strong class="font-bold">Lỗi!</strong>
-                                <span class="block sm:inline">User này đã bị ban.</span>
+                                <span class="block sm:inline">User này đã bị ban </span>
+                                <?php if ($ban['type_ban'] == 2) : ?>
+                                    <span class="block sm:inline">(ban theo ip: <?= $ban['ip_ban'] ?>)</span>
+                                <?php endif; ?>
+                                <br>
+                                <span class="block sm:inline">Lí do: <?= $ban['li_do'] ?></span>
                             </div>
 
                             <span class="time_end text-sm">Hết hạn: <?= $ban['time_end'] ?></span>
@@ -170,6 +205,10 @@ if (isset($_GET['id'])) :
                             <form action="" method="post" enctype="multipart/form-data">
                                 <input type="hidden" name="id_user" value="<?= $user_profile['id'] ?>">
                                 <button type="submit" name="unban_user" class="bg-green-500 text-white px-4 py-2 rounded-lg shadow hover:bg-green-600 transition mt-4">Unban user này</button>
+
+                                <?php if ($ban['type_ban'] == 2) : ?>
+                                    <button type="submit" name="unban_user_ip" class="bg-green-500 text-white px-4 py-2 rounded-lg shadow hover:bg-green-600 transition mt-4">Unban IP này</button>
+                                <?php endif; ?>
                             </form>
 
                         <?php else : ?>
@@ -205,11 +244,19 @@ if (isset($_GET['id'])) :
                                             <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token']; ?>">
                                             <input type="hidden" name="id_user_admin" value="<?= $user['id'] ?>">
                                             <input type="hidden" name="id_user_ban" value="<?= $user_profile['id'] ?>">
-                                            <input type="hidden" name="role_user_ban" value="1">
+                                            <input type="hidden" name="ban_ip" value="<?= $user_profile['ip'] ?>">
 
                                             <div class="mt-4">
                                                 <label for="ban_time_end" class="block text-sm font-medium text-gray-700">Thời hạn</label>
                                                 <input type="datetime-local" name="ban_time_end" id="ban_time_end" class="w-full p-2 border border-gray-300 rounded-lg focus:ring focus:ring-green-300" required>
+                                            </div>
+
+                                            <div class="mt-4">
+                                                <label for="type_ban" class="block text-sm font-medium text-gray-700">Loại ban</label>
+                                                <select name="type_ban" id="type_ban" class="w-full p-2 border border-gray-300 rounded-lg focus:ring focus:ring-green-300" required>
+                                                    <option value="1" selected>Ban theo username</option>
+                                                    <option value="2">Ban theo IP(<?= $user_profile['ip'] ?>)</option>
+                                                </select>
                                             </div>
 
                                             <div class="mt-4">
