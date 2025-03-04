@@ -57,6 +57,13 @@ function get_username_by_id($id)
                 </div>
             </div>
         <?php endforeach; ?>
+
+        <!-- Xem thêm -->
+        <div class="text-center mt-4">
+            <a href="/blog" class="text-primary">
+                <span class="mr-2 text-blue-500 hover:underline">Xem thêm</span>
+            </a>
+        </div>
     <?php else : ?>
         <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg max-w-2xl mx-auto">
             <div class="text-center">
@@ -65,10 +72,5 @@ function get_username_by_id($id)
         </div>
     <?php endif; ?>
 
-    <!-- Xem thêm -->
-    <div class="text-center mt-4">
-        <a href="/blog" class="text-primary">
-            <span class="mr-2 text-blue-500 hover:underline">Xem thêm</span>
-        </a>
-    </div>
+
 </section>
