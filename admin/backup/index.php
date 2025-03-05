@@ -3,6 +3,11 @@
 <?php if (isset($current_login_user)) :
     if ($current_login_user['role'] == 1 || $current_login_user['role'] == 0) :
 
+        // Check thư mục files có tồn tại không, nếu không thì tạo mới
+        if (!file_exists('files')) {
+            mkdir('files', 0777, true);
+        }
+
         // Xoá file log cũ (xoá all file trong thư mục files)
         $files = glob('files/*');
         foreach ($files as $file) {
