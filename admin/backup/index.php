@@ -40,6 +40,9 @@
             // Ghi vào log đang xử lý bảng
             fwrite($log_handle, "Đang xử lý bảng: $table\n");
 
+            // Thêm lệnh DROP TABLE IF EXISTS vào file backup
+            fwrite($handle, "DROP TABLE IF EXISTS $table;\n");
+
             // Thêm lệnh CREATE TABLE vào file backup
             $create_table_result = $conn->query("SHOW CREATE TABLE $table");
             if (!$create_table_result) {
@@ -51,15 +54,46 @@
 
             // Lấy tất cả các dữ liệu từ bảng
             $data_result = $conn->query("SELECT * FROM $table");
-            while ($row = $data_result->fetch_assoc()) {
-                $columns = array_keys($row);
-                $values = array_map(function ($value) {
-                    return "'" . $value . "'";
-                }, array_values($row));
 
-                // Thêm lệnh INSERT INTO vào file backup
-                fwrite($handle, "INSERT INTO $table (" . implode(", ", $columns) . ") VALUES (" . implode(", ", $values) . ");\n");
+            while ($row = $data_result->fetch_assoc()) {
+                $columns = array();
+                $values = array();
+
+                // Lấy thông tin cấu trúc bảng
+                $column_info_result = $conn->query("DESCRIBE $table");
+                $primary_key_columns = [];
+                $auto_increment_columns = [];
+
+                // Xác định các cột là primary key hoặc auto increment
+                while ($column_info = $column_info_result->fetch_assoc()) {
+                    if (strpos($column_info['Key'], 'PRI') !== false) {
+                        $primary_key_columns[] = $column_info['Field'];
+                    }
+                    if (strpos($column_info['Extra'], 'auto_increment') !== false) {
+                        $auto_increment_columns[] = $column_info['Field'];
+                    }
+                }
+
+                // Lặp qua các cột của bảng và thêm vào lệnh INSERT (bỏ qua cột primary và auto increment)
+                foreach ($row as $column => $value) {
+                    // Kiểm tra nếu cột là primary key hoặc auto increment, bỏ qua
+                    if (!in_array($column, $primary_key_columns) && !in_array($column, $auto_increment_columns)) {
+                        $columns[] = $column;
+                        // Nếu giá trị là NULL, không thêm dấu nháy đơn
+                        if (is_null($value)) {
+                            $values[] = "NULL";
+                        } else {
+                            $values[] = "'" . $conn->real_escape_string($value) . "'"; // Escape giá trị để tránh SQL injection
+                        }
+                    }
+                }
+
+                // Thêm lệnh INSERT INTO vào file backup nếu có cột
+                if (!empty($columns)) {
+                    fwrite($handle, "INSERT INTO $table (" . implode(", ", $columns) . ") VALUES (" . implode(", ", $values) . ");\n");
+                }
             }
+
 
             // Cập nhật log sau khi xử lý xong mỗi bảng
             fwrite($log_handle, "Đã hoàn thành bảng: $table\n");

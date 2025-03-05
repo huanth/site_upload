@@ -113,9 +113,9 @@ function update_user_ip($id)
 function home_url()
 {
     global $conn;
-    $sql_config = "SELECT * FROM config WHERE `key` = 'home_url'";
+    $sql_config = "SELECT * FROM config WHERE `key_data` = 'home_url'";
     $result_config = mysqli_query($conn, $sql_config);
     $config = mysqli_fetch_assoc($result_config);
 
-    return $config['value'];
+    return $config['value_data'];
 }
