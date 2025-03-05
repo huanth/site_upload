@@ -18,3 +18,7 @@ RewriteRule ^.*$ 404.php [L]
 # Nếu URL bắt đầu với /config, chuyển hướng về trang chủ
 RewriteCond %{REQUEST_URI} ^/config
 RewriteRule ^.*$ / [R=301,L]
+
+# Nếu URL bắt đầu với /functions, chuyển hướng về trang chủ
+RewriteCond %{REQUEST_URI} ^/function
+RewriteRule ^.*$ / [R=301,L]
