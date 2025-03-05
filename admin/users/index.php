@@ -48,6 +48,8 @@
                 <i class="fas fa-folder-open text-primary mr-2"></i> THÀNH VIÊN <span class="ml-2 px-2.5 py-0.5 bg-primary/10 text-primary rounded-full text-sm"><?= $total_users; ?></span>
             </h2>
 
+            <a href="/admin" class="text-black-600">&larr; Quay lại</a>
+
             <?php if (empty($result_users)) : ?>
                 <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg max-w-2xl mx-auto">
                     <div class="text-center">

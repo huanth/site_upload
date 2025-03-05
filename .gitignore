@@ -7,3 +7,6 @@ config/config.php
 vendor/
 composer.lock
 login/login_google/config.php
+admin/backup/files/
+admin/backup/*.sql
+admin/backup/*.txt

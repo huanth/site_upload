@@ -55,7 +55,7 @@
                 </a>
 
                 <a href="/admin/users">
-                    <div class="flex items-center justify-between p-4 bg-white rounded-lg border border-gray-200 hover:border-green-300 transition-colors duration-300 hover:shadow-md">
+                    <div class="flex items-center justify-between p-4 bg-white rounded-lg border border-gray-200 hover:border-green-300 transition-colors duration-300 hover:shadow-md mb-4">
                         <div class="flex items-center w-full">
                             <div class="bg-red-50 p-3 rounded-full border border-red-100">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-black-600" style="width: 40px; height: 40px;vertical-align: middle;fill: currentColor;overflow: hidden;" viewBox="0 0 1024 1024" version="1.1">
@@ -78,7 +78,7 @@
                 </a>
 
                 <a href="/admin/settings">
-                    <div class="flex items-center justify-between p-4 bg-white rounded-lg border border-gray-200 hover:border-red-300 transition-colors duration-300 hover:shadow-md">
+                    <div class="flex items-center justify-between p-4 bg-white rounded-lg border border-gray-200 hover:border-red-300 transition-colors duration-300 hover:shadow-md mb-4">
                         <div class="flex items-center w-full">
                             <div class="bg-red-50 p-3 rounded-full border border-red-100">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-black-600" style="width: 40px; height: 40px;vertical-align: middle;fill: currentColor;overflow: hidden;" viewBox="0 0 1024 1024" version="1.1">
@@ -98,6 +98,14 @@
                         </div>
                     </div>
                 </a>
+
+                <div class="flex items-center justify-between p-4 bg-white rounded-lg border border-gray-200 hover:border-red-300 transition-colors duration-300 hover:shadow-md mb-4">
+                    <!-- Backup -->
+                    <a href="/admin/backup" class="bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-red-600 transition">Backup dữ liệu</a>
+
+                    <!-- View Logs -->
+                    <a href="/admin/logs" class="bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-red-600 transition">Xem logs</a>
+                </div>
 
             </div>
         </section>
