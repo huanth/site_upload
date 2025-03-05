@@ -10,6 +10,7 @@ include 'config/config.php';
 session_start();
 
 include 'function/function.php';
+include 'function/pagination.php';
 
 if (isset($_SESSION['user'])) {
     // Update the User 

@@ -7,7 +7,6 @@ if (isset($_GET['name'])) :
 
     // Xử lý phân trang
     $current_page = $_GET['page'] ?? 1;
-    $limit = 5;
     $offset = ($current_page - 1) * $limit;
 
     // Tìm kiếm trong cơ sở dữ liệu dựa trên tên tệp
@@ -15,59 +14,14 @@ if (isset($_GET['name'])) :
     $result = mysqli_query($conn, $sql);
     $files = mysqli_fetch_all($result, MYSQLI_ASSOC);
 
-    $html_pagination = '';
-
     // Tính số lượng trang
     $sql = "SELECT COUNT(*) FROM files WHERE name LIKE '%$name%'";
     $result = mysqli_query($conn, $sql);
     $row = mysqli_fetch_row($result);
     $total_records = $row[0];
-    $total_pages = ceil($total_records / $limit);
 
-    if ($total_pages > 1) {
-        $prev = $current_page - 1;
-        $next = $current_page + 1;
+    $html_pagination = pagination($total_records, $current_page);
 
-        // Hiển thị nút "Trước" nếu không phải trang đầu
-        if ($current_page > 1) {
-            $html_pagination .= '<a href="?page=' . $prev . '&name=' . urlencode($name) . '" class="flex items-center px-3 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"><i class="fas fa-chevron-left mr-1 text-xs"></i> Trước</a>';
-        }
-
-        // Hiển thị các trang (nếu số trang > 5, hiển thị chỉ 2 trang đầu và 2 trang cuối)
-        if ($total_pages > 5) {
-            for ($i = 1; $i <= 2; $i++) {
-                $html_pagination .= ($i == $current_page) ?
-                    '<span class="px-3 py-2 bg-blue-500 text-white rounded-lg transition-colors">' . $i . '</span>' :
-                    '<a href="?page=' . $i . '&name=' . urlencode($name) . '" class="px-3 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg transition-colors">' . $i . '</a>';
-            }
-            if ($current_page > 3) {
-                $html_pagination .= '<span class="px-3 py-2">...</span>';
-            }
-            for ($i = max($current_page - 1, 3); $i <= min($current_page + 1, $total_pages - 2); $i++) {
-                $html_pagination .= ($i == $current_page) ?
-                    '<span class="px-3 py-2 bg-blue-500 text-white rounded-lg transition-colors">' . $i . '</span>' :
-                    '<a href="?page=' . $i . '&name=' . urlencode($name) . '" class="px-3 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg transition-colors">' . $i . '</a>';
-            }
-            if ($current_page < $total_pages - 2) {
-                $html_pagination .= '<span class="px-3 py-2">...</span>';
-            }
-            for ($i = $total_pages - 1; $i <= $total_pages; $i++) {
-                $html_pagination .= ($i == $current_page) ?
-                    '<span class="px-3 py-2 bg-blue-500 text-white rounded-lg transition-colors">' . $i . '</span>' :
-                    '<a href="?page=' . $i . '&name=' . urlencode($name) . '" class="px-3 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg transition-colors">' . $i . '</a>';
-            }
-        } else {
-            for ($i = 1; $i <= $total_pages; $i++) {
-                $html_pagination .= ($i == $current_page) ?
-                    '<span class="px-3 py-2 bg-blue-500 text-white rounded-lg transition-colors">' . $i . '</span>' :
-                    '<a href="?page=' . $i . '&name=' . urlencode($name) . '" class="px-3 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg transition-colors">' . $i . '</a>';
-            }
-        }
-
-        if ($current_page < $total_pages) {
-            $html_pagination .= '<a href="?page=' . $next . '&name=' . urlencode($name) . '" class="flex items-center px-3 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">Tiếp <i class="fas fa-chevron-right ml-1 text-xs"></i></a>';
-        }
-    }
 ?>
     <section class="mb-6">
         <h2 class="text-xl font-semibold mb-4 border-b-2 border-primary pb-2 flex items-center">
