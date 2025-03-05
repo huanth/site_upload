@@ -12,9 +12,9 @@ if (!$conn) {
 
 
 // Load config
-$sql_config = "SELECT * FROM config WHERE `key` = 'home_url'";
+$sql_config = "SELECT * FROM config WHERE `key_data` = 'home_url'";
 $result_config = mysqli_query($conn, $sql_config);
 $config = mysqli_fetch_assoc($result_config);
 
 // Config
-$home_url = $config['value'];
+$home_url = $config['value_data'];
