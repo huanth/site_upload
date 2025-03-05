@@ -40,7 +40,7 @@ $html_pagination = pagination($total_records, $current_page);
 
                             <!-- Get 50 first characters of content -->
                             <p class="text-gray-600 text-sm mb-3">
-                                <?= substr($blog['content'], 0, 250); ?> ...
+
                             </p>
                             <div class="news-meta text-xs text-gray-500 mb-3 flex justify-between">
                                 <span class="flex items-center">
