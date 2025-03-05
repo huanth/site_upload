@@ -15,7 +15,9 @@
 
             <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg max-w-2xl mx-auto">
                 <div class="divide-y divide-gray-200 dark:divide-gray-700">
-
+                    <div class="py-8 text-base leading-6 space-y-4 text-gray-700 sm:text-lg sm:leading-7">
+                        <span class="text-lg font-semibold">Không có file log nào.</span>
+                    </div>
                 </div>
             </div>
         </section>
