@@ -26,6 +26,9 @@
                         <strong class="font-bold">Thành công!</strong>
                         <span class="block sm:inline">Cập nhật blog thành công.</span>
                     </div>';
+
+                // Load again the blog
+                header('Location: /admin/blogs/edit.php?id=' . $id);
             } else {
                 echo '<div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 mb-4 rounded relative" role="alert">
                         <strong class="font-bold">Lỗi!</strong>
@@ -51,7 +54,7 @@
                     </div>
                     <div class="mb-4">
                         <label for="content" class="block text-gray-600 dark:text-gray-400 text-sm font-medium mb-2">Nội dung</label>
-                        <textarea name="content" id="content" class="w-full p-2 border border-gray-300 rounded-lg focus:ring focus:ring-green-300" rows="10"><?= $blog['content']; ?></textarea>
+                        <textarea name="content" id="text_area_content" class="w-full p-2 border border-gray-300 rounded-lg focus:ring focus:ring-green-300" rows="10"><?= $blog['content']; ?></textarea>
                     </div>
 
                     <div class="mb-4">

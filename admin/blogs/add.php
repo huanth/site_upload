@@ -45,7 +45,7 @@
                     </div>
                     <div class="mb-4">
                         <label for="content" class="block text-gray-600 dark:text-gray-400 text-sm font-medium mb-2">Nội dung</label>
-                        <textarea name="content" id="content" class="w-full p-2 border border-gray-300 rounded-lg focus:ring focus:ring-green-300" rows="10" placeholder="Nội dung"></textarea>
+                        <textarea name="content" id="text_area_content" class="w-full p-2 border border-gray-300 rounded-lg focus:ring focus:ring-green-300" rows="10" placeholder="Nội dung"></textarea>
                     </div>
 
                     <div class="mb-4">
