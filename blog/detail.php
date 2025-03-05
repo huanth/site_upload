@@ -29,19 +29,6 @@ if (isset($_GET['id'])) :
     $result = $stmt->get_result();
     $comments = $result->fetch_all(MYSQLI_ASSOC);
 
-    // get username by id
-    function get_username_by_id($id)
-    {
-        global $conn;
-        $sql = "SELECT username FROM users WHERE id = ?";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param('i', $id);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        $row = $result->fetch_assoc();
-        return $row['username'];
-    }
-
     // Submit comment
     if (isset($_POST['submit_comment'])) {
         $blog_id = $_POST['blog_id'];

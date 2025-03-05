@@ -1,9 +1,9 @@
 <?php include '../../header.php'; ?>
 
-<?php if (isset($_SESSION['user'])) :
-    if ($_SESSION['user']['role'] == 1 || $_SESSION['user']['role'] == 0) :
+<?php if (isset($current_login_user)) :
+    if ($current_login_user['role'] == 1 || $current_login_user['role'] == 0) :
 
-        $user = $_SESSION['user'] ?? null;
+        $user = $current_login_user ?? null;
 
         // Get user files
         $current_page = $_GET['page'] ?? 1;
@@ -21,15 +21,6 @@
         $row = mysqli_fetch_row($result);
         $total_records = $row[0];
         $total_pages = ceil($total_records / $limit);
-
-        function get_username_by_id($id)
-        {
-            global $conn;
-            $sql = "SELECT username FROM users WHERE id = $id";
-            $result = mysqli_query($conn, $sql);
-            $row = mysqli_fetch_assoc($result);
-            return $row['username'];
-        }
 
         if ($total_pages > 1) {
             $prev = $current_page - 1;

@@ -5,7 +5,7 @@ if (isset($_GET['id'])) {
     $file_id = $_GET['id'];
 
     // Kiểm tra session nếu người dùng đã đăng nhập
-    if (!isset($_SESSION['user']['id'])) {
+    if (!isset($current_login_user['id'])) {
         echo '<div class="alert alert-danger" role="alert">Bạn cần đăng nhập trước.</div>';
         exit();
     }
@@ -28,8 +28,8 @@ if (isset($_GET['id'])) {
             }
 
             // Kiểm tra quyền của người dùng
-            if ($row_file['user'] != $_SESSION['user']['id']) {
-                if ($_SESSION['user']['role'] != 1 && $_SESSION['user']['role'] != 0) {
+            if ($row_file['user'] != $current_login_user['id']) {
+                if ($current_login_user['role'] != 1 && $current_login_user['role'] != 0) {
                     echo '<div class="alert alert-danger" role="alert">Bạn không có quyền xoá file này.</div>';
                     exit();
                 }

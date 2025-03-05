@@ -1,20 +1,14 @@
 <?php include '../header.php'; ?>
 
 <?php
-$user = $_SESSION['user'] ?? null;
+$user = $current_login_user ?? null;
 
 if (!$user) {
     header('Location: ../login');
     exit;
 }
 
-// Check xem user có bị ban không
-$sql_ban = "SELECT * FROM ban WHERE user = ? AND time_end > NOW() AND is_ban = 1";
-$stmt_ban = $conn->prepare($sql_ban);
-$stmt_ban->bind_param("i", $user['id']);
-$stmt_ban->execute();
-$result_ban = $stmt_ban->get_result();
-$ban = $result_ban->fetch_assoc();
+$ban = check_user_is_ban($user['id']);
 
 $role = (int) $user['role'];
 
@@ -119,17 +113,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['change_password'])) {
                 </div>';
         }
     }
-}
-
-function get_username_by_id($id)
-{
-    global $conn;
-    $stmt = $conn->prepare("SELECT username FROM users WHERE id = ?");
-    $stmt->bind_param("i", $id);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $user = $result->fetch_assoc();
-    return $user['username'] ?? 'N/A';
 }
 
 // CSRF Token

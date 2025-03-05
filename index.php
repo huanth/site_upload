@@ -1,6 +1,6 @@
 <?php include 'header.php'; ?>
 
-<?php if (isset($_SESSION['user'])) : ?>
+<?php if (isset($user)) : ?>
     <?php include 'upload/index.php'; ?>
 <?php else : ?>
     <!-- Thông báo đăng nhập để tải lên -->

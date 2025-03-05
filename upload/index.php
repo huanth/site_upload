@@ -40,7 +40,7 @@ if (isset($_POST['submit'])) {
         if (in_array($fileType, $allowedFileTypes)) {
             // Kiểm tra kích thước file (max 30MB)
             if ($fileSize <= 30 * 1024 * 1024) { // 30MB
-                $current_user_id = $_SESSION['user']['id'];
+                $current_user_id = $current_login_user['id'];
 
                 // Đặt tên file duy nhất để tránh trùng lặp
                 $targetFilePath = $uploadDirectory . $current_user_id . time() . "_" . $fileName;
@@ -51,7 +51,7 @@ if (isset($_POST['submit'])) {
                 $result = mysqli_query($conn, $sql);
 
                 // Add exp to user
-                $current_user_exp = (int)$_SESSION['user']['exp'];
+                $current_user_exp = (int)$current_login_user['exp'];
                 $new_current_user_exp = $current_user_exp + 1;
                 $sql_new_exp = "UPDATE users SET exp = $new_current_user_exp WHERE id = $current_user_id";
                 $result_exp = mysqli_query($conn, $sql_new_exp);
@@ -89,13 +89,7 @@ if (isset($_POST['submit'])) {
     }
 }
 
-// Check user có bị banned không
-$sql_check_banned = "SELECT * FROM ban WHERE user = ? AND time_end > NOW() AND is_ban = 1";
-$stmt_check_banned = $conn->prepare($sql_check_banned);
-$stmt_check_banned->bind_param("i", $_SESSION['user']['id']);
-$stmt_check_banned->execute();
-$result_check_banned = $stmt_check_banned->get_result();
-$banned = $result_check_banned->fetch_assoc();
+$banned = check_user_is_ban($current_login_user['id']);
 ?>
 <?php if ($banned) : ?>
     <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 mb-4 rounded relative" role="alert">

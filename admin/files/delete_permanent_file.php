@@ -5,7 +5,7 @@ if (isset($_GET['id'])) {
     $file_id = $_GET['id'];
 
     // Kiểm tra session nếu người dùng đã đăng nhập vai trò admin
-    if (!isset($_SESSION['user']['id']) && $_SESSION['user']['role'] != 1 && $_SESSION['user']['id'] != 0) {
+    if (!isset($user['id']) && $user['role'] != 1 && $user['id'] != 0) {
         echo '<div class="alert alert-danger" role="alert">Có lỗi xảy ra.</div>';
         exit();
     }
@@ -28,7 +28,7 @@ if (isset($_GET['id'])) {
             }
 
             // Kiểm tra quyền của người dùng
-            if ($_SESSION['user']['role'] != 1 && $_SESSION['user']['role'] != 0) {
+            if ($user['role'] != 1 && $user['role'] != 0) {
                 echo 'Xoá file không thành công.';
                 echo '<div class="alert alert-danger" role="alert">Bạn không có quyền xoá file này.</div>';
                 exit();

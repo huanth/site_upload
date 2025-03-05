@@ -7,15 +7,6 @@ $sql = "SELECT * FROM blogs ORDER BY pin DESC, date_create DESC LIMIT $limit OFF
 $result = mysqli_query($conn, $sql);
 $blogs = mysqli_fetch_all($result, MYSQLI_ASSOC);
 
-function get_username_by_id($id)
-{
-    global $conn;
-    $sql = "SELECT username FROM users WHERE id = $id";
-    $result = mysqli_query($conn, $sql);
-    $row = mysqli_fetch_assoc($result);
-    return $row['username'];
-}
-
 $html_pagination = '';
 $sql = "SELECT COUNT(*) FROM blogs";
 $result = mysqli_query($conn, $sql);

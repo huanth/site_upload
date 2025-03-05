@@ -5,7 +5,7 @@ if (isset($_GET['id'])) {
     $file_id = $_GET['id'];
 
     // Kiểm tra session nếu người dùng đã đăng nhập
-    if (!isset($_SESSION['user']['id'])) {
+    if (!isset($current_login_user['id'])) {
         echo '<div class="alert alert-danger" role="alert">Bạn cần đăng nhập trước.</div>';
         exit();
     }
@@ -28,7 +28,7 @@ if (isset($_GET['id'])) {
             }
 
             // Kiểm tra quyền của người dùng
-            if ($row_file['user'] != $_SESSION['user']['id']) {
+            if ($row_file['user'] != $current_login_user['id']) {
                 echo '<div class="alert alert-danger" role="alert">You are not allowed to delete files from this page.</div>';
                 exit();
             }

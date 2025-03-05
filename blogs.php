@@ -3,15 +3,6 @@ $sql = "SELECT * FROM blogs ORDER BY pin DESC, date_create DESC LIMIT 10";
 $result = mysqli_query($conn, $sql);
 $blogs = mysqli_fetch_all($result, MYSQLI_ASSOC);
 
-function get_username_by_id($id)
-{
-    global $conn;
-    $sql = "SELECT username FROM users WHERE id = $id";
-    $result = mysqli_query($conn, $sql);
-    $row = mysqli_fetch_assoc($result);
-    return $row['username'];
-}
-
 ?>
 <section class="mb-6">
     <h2 class="text-xl font-semibold mb-4 border-b-2 border-primary pb-2">📌 BLOG</h2>

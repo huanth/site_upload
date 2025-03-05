@@ -1,7 +1,7 @@
 <?php include '../../header.php'; ?>
 
-<?php if (isset($_SESSION['user'])) :
-    if ($_SESSION['user']['role'] == 1 || $_SESSION['user']['role'] == 0) :
+<?php if (isset($current_login_user)) :
+    if ($current_login_user['role'] == 1 || $current_login_user['role'] == 0) :
 
         // Get all users, limit 10 users per page
         $current_page = isset($_GET['page']) ? $_GET['page'] : 1;
@@ -82,12 +82,13 @@
             $stmt->execute();
             $result = $stmt->get_result();
             $roleData = $result->fetch_assoc();
-            $roleName = $roleData['position'] ?? 'N/A'; 
+            $roleName = $roleData['position'] ?? 'N/A';
 
             return $roleName;
         }
 
-        function getCapBac($exp) {
+        function getCapBac($exp)
+        {
             global $conn;
 
             $stmt = $conn->prepare("SELECT cap_bac, exp FROM tu_luyen WHERE exp <= ? ORDER BY exp DESC LIMIT 1");
@@ -145,7 +146,7 @@
                                                     <?= getRoleById($result_user['role']); ?>
                                                 </span>
 
-                                                 <span class="inline-flex items-center mr-3">
+                                                <span class="inline-flex items-center mr-3">
                                                     <i class="fa-solid fa-wand-magic mr-1"></i>
                                                     <?= getCapBac($result_user['exp']); ?>
                                                 </span>
