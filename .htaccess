@@ -1,6 +1,10 @@
 RewriteEngine On
 RewriteBase /
 
+# Luôn chuyển hướng dùng HTTPS
+RewriteCond %{HTTPS} off
+RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
 # Chuyển hướng URL từ /file-info/<id> thành index.php?id=<id>
 RewriteRule ^file-info/([0-9]+)$ file-info/index.php?id=$1 [L,QSA]
 

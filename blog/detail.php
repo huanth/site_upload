@@ -13,13 +13,7 @@ if (isset($_GET['id'])) :
     $blog = $result->fetch_assoc();
 
     // Get username by id
-    $sql = "SELECT username FROM users WHERE id = ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param('i', $blog['author']);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $row = $result->fetch_assoc();
-    $username = $row['username'];
+    $username = get_username_by_id($blog['author']);
 
     // Get comments
     $sql = "SELECT * FROM comments WHERE blog = ? ORDER BY date_create DESC";
@@ -41,8 +35,43 @@ if (isset($_GET['id'])) :
         $stmt->execute();
         $stmt->close();
 
+        // Select email of author
+        $sql = "SELECT email FROM users WHERE id = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param('i', $blog['author']);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $blog_author = $result->fetch_assoc();
+
+        $author_email = $blog_author['email'];
+
+
+        // Send email to author
+        $title = "Có bình luận mới trên blog của bạn tại " . $home_url;
+        $content = "Blog: " . $blog['title'] . "\n";
+        $content .= "<br>";
+        $content .= "Nội dung: " . $comment . "\n";
+        $content .= "<br>";
+        $content .= "Xem chi tiết: <a href='" . $home_url . "/blog/$blog_id'>Xem blog</a>";
+        $content .= "\n\n";
+
+        // Headers using html content
+        $headers = "MIME-Version: 1.0" . "\r\n";
+        $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
+        $headers .= 'From: ' . $home_url . ' <no-reply@' . $home_url . '>' . "\r\n";
+
+        mail($author_email, $title, $content, $headers);
+
         header("Location: /blog/$blog_id");
     }
+
+    $current_page = $_GET['page'] ?? 1;
+    $sql = "SELECT * FROM blogs ORDER BY pin DESC, date_create DESC LIMIT $limit OFFSET " . ($current_page - 1) * $limit;
+    $result = mysqli_query($conn, $sql);
+    $blogs = mysqli_fetch_all($result, MYSQLI_ASSOC);
+    $total_records = count($blogs);
+
+    $html_pagination = pagination($total_records, $current_page);
 
 ?>
     <div class="bg-white shadow-lg rounded-lg p-6 border border-yellow-500">
@@ -74,16 +103,23 @@ if (isset($_GET['id'])) :
 
     <!-- Danh sách bình luận -->
     <?php if (count($comments) > 0) : ?>
-        <?php foreach ($comments as $comment) : ?>
-            <div class="mt-4">
-                <div class="bg-gray-100 p-3 rounded-lg mb-2">
-                    <p class="text-sm text-gray-600"><strong><?= get_username_by_id($comment['user']); ?>:</strong>
-                    <p><?= $comment['comment']; ?></p>
-                    </p>
-                    <p class="text-xs text-gray-400 text-right"><?= date('d/m/Y H:i', strtotime($comment['date_create'])); ?></p>
+        <div class="divide-y divide-gray-200 dark:divide-gray-700">
+            <?php foreach ($comments as $comment) : ?>
+                <div class="mt-4">
+                    <div class="bg-gray-100 p-3 rounded-lg mb-2">
+                        <p class="text-sm text-gray-600"><strong><?= get_username_by_id($comment['user']); ?>:</strong>
+                        <p><?= $comment['comment']; ?></p>
+                        </p>
+                        <p class="text-xs text-gray-400 text-right"><?= date('d/m/Y H:i', strtotime($comment['date_create'])); ?></p>
+                    </div>
                 </div>
-            </div>
-        <?php endforeach; ?>
+            <?php endforeach; ?>
+        </div>
+
+        <!-- Pagination -->
+        <div class="flex flex-wrap justify-center mt-6 gap-2">
+            <?= $html_pagination; ?>
+        </div>
     <?php else : ?>
         <div class="bg-gray-100 p-3 rounded-lg mb-2 mt-4">
             <p class="text-sm text-gray-600">Chưa có bình luận nào.</p>
